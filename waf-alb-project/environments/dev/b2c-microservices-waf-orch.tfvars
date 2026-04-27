@@ -70,7 +70,9 @@ ip_reputation_action   = "count"
 ip_reputation_priority = 1
 
 ip_reputation_rule_action_overrides = [
-  # TODO: add sub-rule overrides
+  { name = "AWSManagedIPReputationList",  action = "block" },
+  { name = "AWSManagedReconnaissanceList", action = "block" },
+  { name = "AWSManagedIPDDoSList",        action = "count" },
 ]
 
 # 3. AWS-AWSManagedRulesAnonymousIpList — WCU: 50
@@ -79,7 +81,8 @@ anonymous_ip_action   = "count"
 anonymous_ip_priority = 2
 
 anonymous_ip_rule_action_overrides = [
-  # TODO: add sub-rule overrides
+  { name = "AnonymousIPList",        action = "block" },
+  { name = "HostingProviderIPList",  action = "block" },
 ]
 
 # 4. AWS-AWSManagedRulesCommonRuleSet — WCU: 700
@@ -88,7 +91,28 @@ aws_managed_rules_action   = "count"
 aws_managed_rules_priority = 3
 
 aws_managed_rules_rule_action_overrides = [
-  # TODO: add sub-rule overrides
+  { name = "NoUserAgent_HEADER",                   action = "block" },
+  { name = "UserAgent_BadBots_HEADER",             action = "block" },
+  { name = "SizeRestrictions_QUERYSTRING",         action = "allow" },
+  { name = "SizeRestrictions_Cookie_HEADER",       action = "block" },
+  { name = "SizeRestrictions_BODY",                action = "allow" },
+  { name = "SizeRestrictions_URIPATH",             action = "block" },
+  { name = "EC2MetaDataSSRF_BODY",                 action = "allow" },
+  { name = "EC2MetaDataSSRF_COOKIE",               action = "block" },
+  { name = "EC2MetaDataSSRF_URIPATH",              action = "block" },
+  { name = "EC2MetaDataSSRF_QUERYARGUMENTS",       action = "block" },
+  { name = "GenericLFI_QUERYARGUMENTS",            action = "block" },
+  { name = "GenericLFI_URIPATH",                   action = "block" },
+  { name = "GenericLFI_BODY",                      action = "block" },
+  { name = "RestrictedExtensions_URIPATH",         action = "block" },
+  { name = "RestrictedExtensions_QUERYARGUMENTS",  action = "block" },
+  { name = "GenericRFI_QUERYARGUMENTS",            action = "block" },
+  { name = "GenericRFI_BODY",                      action = "block" },
+  { name = "GenericRFI_URIPATH",                   action = "block" },
+  { name = "CrossSiteScripting_COOKIE",            action = "block" },
+  { name = "CrossSiteScripting_QUERYARGUMENTS",    action = "block" },
+  { name = "CrossSiteScripting_BODY",              action = "allow" },
+  { name = "CrossSiteScripting_URIPATH",           action = "block" },
 ]
 
 # 5. AWS-AWSManagedRulesKnownBadInputsRuleSet — WCU: 200
