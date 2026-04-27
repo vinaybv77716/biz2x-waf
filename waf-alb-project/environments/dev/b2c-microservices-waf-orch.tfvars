@@ -32,7 +32,7 @@ default_action = "allow"
 # Inspection: Common | Version: Default (Version_1.0)
 enable_bot_control           = true
 bot_control_action           = "count"
-bot_control_priority         = 36
+bot_control_priority         = 0
 bot_control_inspection_level = "COMMON"
 
 bot_control_rule_action_overrides = [
@@ -67,7 +67,7 @@ bot_control_rule_action_overrides = [
 # 2. AWS-AWSManagedRulesAmazonIpReputationList — WCU: 25
 enable_ip_reputation   = true
 ip_reputation_action   = "count"
-ip_reputation_priority = 25
+ip_reputation_priority = 1
 
 ip_reputation_rule_action_overrides = [
   # TODO: add sub-rule overrides
@@ -76,7 +76,7 @@ ip_reputation_rule_action_overrides = [
 # 3. AWS-AWSManagedRulesAnonymousIpList — WCU: 50
 enable_anonymous_ip   = true
 anonymous_ip_action   = "count"
-anonymous_ip_priority = 35
+anonymous_ip_priority = 3
 
 anonymous_ip_rule_action_overrides = [
   # TODO: add sub-rule overrides
@@ -85,7 +85,7 @@ anonymous_ip_rule_action_overrides = [
 # 4. AWS-AWSManagedRulesCommonRuleSet — WCU: 700
 enable_aws_managed_rules   = true
 aws_managed_rules_action   = "count"
-aws_managed_rules_priority = 9
+aws_managed_rules_priority = 4
 
 aws_managed_rules_rule_action_overrides = [
   # TODO: add sub-rule overrides
@@ -94,7 +94,7 @@ aws_managed_rules_rule_action_overrides = [
 # 5. AWS-AWSManagedRulesKnownBadInputsRuleSet — WCU: 200
 enable_known_bad_inputs   = true
 known_bad_inputs_action   = "count"
-known_bad_inputs_priority = 15
+known_bad_inputs_priority = 4
 
 known_bad_inputs_rule_action_overrides = [
   # TODO: add sub-rule overrides
@@ -103,7 +103,7 @@ known_bad_inputs_rule_action_overrides = [
 # 6. AWS-AWSManagedRulesLinuxRuleSet — WCU: 200
 enable_linux_protection   = true
 linux_protection_action   = "count"
-linux_protection_priority = 50
+linux_protection_priority = 5
 
 linux_protection_rule_action_overrides = [
   # TODO: add sub-rule overrides
@@ -112,7 +112,7 @@ linux_protection_rule_action_overrides = [
 # 7. AWS-AWSManagedRulesSQLiRuleSet — WCU: 200
 enable_sql_injection_protection = true
 sql_injection_protection_action = "count"
-sql_injection_priority          = 20
+sql_injection_priority          = 6
 
 sql_injection_rule_action_overrides = [
   # TODO: add sub-rule overrides
