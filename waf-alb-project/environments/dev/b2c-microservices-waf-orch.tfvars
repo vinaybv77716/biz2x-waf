@@ -76,7 +76,7 @@ ip_reputation_rule_action_overrides = [
 # 3. AWS-AWSManagedRulesAnonymousIpList — WCU: 50
 enable_anonymous_ip   = true
 anonymous_ip_action   = "count"
-anonymous_ip_priority = 3
+anonymous_ip_priority = 2
 
 anonymous_ip_rule_action_overrides = [
   # TODO: add sub-rule overrides
@@ -85,7 +85,7 @@ anonymous_ip_rule_action_overrides = [
 # 4. AWS-AWSManagedRulesCommonRuleSet — WCU: 700
 enable_aws_managed_rules   = true
 aws_managed_rules_action   = "count"
-aws_managed_rules_priority = 4
+aws_managed_rules_priority = 3
 
 aws_managed_rules_rule_action_overrides = [
   # TODO: add sub-rule overrides
