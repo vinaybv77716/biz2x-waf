@@ -87,7 +87,7 @@ anonymous_ip_rule_action_overrides = [
 
 # 4. AWS-AWSManagedRulesCommonRuleSet — WCU: 700
 enable_aws_managed_rules   = true
-aws_managed_rules_action   = "count"
+aws_managed_rules_action   = "block"
 aws_managed_rules_priority = 3
 
 aws_managed_rules_rule_action_overrides = [
@@ -117,29 +117,45 @@ aws_managed_rules_rule_action_overrides = [
 
 # 5. AWS-AWSManagedRulesKnownBadInputsRuleSet — WCU: 200
 enable_known_bad_inputs   = true
-known_bad_inputs_action   = "count"
+known_bad_inputs_action   = "block"
 known_bad_inputs_priority = 4
 
 known_bad_inputs_rule_action_overrides = [
-  # TODO: add sub-rule overrides
+  { name = "JavaDeserializationRCE_BODY",        action = "block" },
+  { name = "JavaDeserializationRCE_URIPATH",     action = "block" },
+  { name = "JavaDeserializationRCE_QUERYSTRING", action = "block" },
+  { name = "JavaDeserializationRCE_HEADER",      action = "block" },
+  { name = "Host_localhost_HEADER",              action = "block" },
+  { name = "PROPFIND_METHOD",                    action = "block" },
+  { name = "ExploitablePaths_URIPATH",           action = "block" },
+  { name = "Log4JRCE_QUERYSTRING",               action = "block" },
+  { name = "Log4JRCE_BODY",                      action = "block" },
+  { name = "Log4JRCE_URIPATH",                   action = "block" },
+  { name = "Log4JRCE_HEADER",                    action = "block" },
 ]
 
 # 6. AWS-AWSManagedRulesLinuxRuleSet — WCU: 200
 enable_linux_protection   = true
-linux_protection_action   = "count"
+linux_protection_action   = "block"
 linux_protection_priority = 5
 
 linux_protection_rule_action_overrides = [
-  # TODO: add sub-rule overrides
+  { name = "LFI_URIPATH",      action = "block" },
+  { name = "LFI_QUERYSTRING",  action = "block" },
+  { name = "LFI_HEADER",       action = "block" },
 ]
 
 # 7. AWS-AWSManagedRulesSQLiRuleSet — WCU: 200
 enable_sql_injection_protection = true
-sql_injection_protection_action = "count"
+sql_injection_protection_action = "block"
 sql_injection_priority          = 6
 
 sql_injection_rule_action_overrides = [
-  # TODO: add sub-rule overrides
+  { name = "SQLi_QUERYARGUMENTS",              action = "block" },
+  { name = "SQLi_BODY",                        action = "allow" },
+  { name = "SQLi_COOKIE",                      action = "block" },
+  { name = "SQLiExtendedPatterns_QUERYARGUMENTS", action = "block" },
+  { name = "SQLiExtendedPatterns_BODY",        action = "allow" },
 ]
 
 # =============================================================================
