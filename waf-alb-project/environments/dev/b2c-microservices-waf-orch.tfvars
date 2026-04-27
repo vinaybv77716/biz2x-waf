@@ -165,7 +165,7 @@ allowed_urls                 = []
 # =============================================================================
 # Rate Limiting
 # =============================================================================
-enable_rate_limiting   = true
+enable_rate_limiting   = false
 rate_limiting_action   = "count"
 rate_limiting_priority = 40
 rate_limit_threshold   = 2000
