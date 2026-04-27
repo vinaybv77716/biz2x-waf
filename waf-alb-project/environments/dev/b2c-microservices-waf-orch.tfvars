@@ -1,0 +1,194 @@
+# =============================================================================
+# b2c-microservices-waf-orch — DEV WAF Configuration
+# Rules: BotControl, IpReputation, AnonymousIp, CommonRuleSet,
+#        KnownBadInputs, LinuxRuleSet, SQLiRuleSet
+# =============================================================================
+
+project     = "b2c-microservices-waf-orch"
+environment = "dev"
+aws_region  = "us-east-1"
+
+# Backend
+bucket = "bizx2-rapyder-jenkins-waf-2026"
+key    = "waf-alb/b2c-microservices-waf-orch.tfstate"
+region = "us-east-1"
+
+# WAF Lifecycle
+create_waf           = true
+existing_web_acl_arn = ""
+
+# ALB Association
+associate_waf = true
+alb_arns      = []
+
+# Default action
+default_action = "allow"
+
+# =============================================================================
+# AWS Managed Rule Groups
+# =============================================================================
+
+# 1. AWS-AWSManagedRulesBotControlRuleSet — WCU: 50
+# Inspection: Common | Version: Default (Version_1.0)
+enable_bot_control           = true
+bot_control_action           = "count"
+bot_control_priority         = 36
+bot_control_inspection_level = "COMMON"
+
+bot_control_rule_action_overrides = [
+  # Common rules
+  { name = "CategoryAdvertising",        action = "block" },
+  { name = "CategoryArchiver",           action = "block" },
+  { name = "CategoryContentFetcher",     action = "block" },
+  { name = "CategoryEmailClient",        action = "block" },
+  { name = "CategoryHttpLibrary",        action = "allow" },
+  { name = "CategoryLinkChecker",        action = "block" },
+  { name = "CategoryMiscellaneous",      action = "block" },
+  { name = "CategoryMonitoring",         action = "block" },
+  { name = "CategoryScrapingFramework",  action = "block" },
+  { name = "CategorySearchEngine",       action = "block" },
+  { name = "CategorySecurity",           action = "block" },
+  { name = "CategorySeo",                action = "block" },
+  { name = "CategorySocialMedia",        action = "block" },
+  { name = "CategoryAI",                 action = "block" },
+  { name = "SignalAutomatedBrowser",     action = "block" },
+  { name = "SignalKnownBotDataCenter",   action = "block" },
+  { name = "SignalNonBrowserUserAgent",  action = "allow" },
+  # Targeted rules
+  { name = "TGT_VolumetricIpTokenAbsent",          action = "challenge" },
+  { name = "TGT_VolumetricSession",                action = "captcha" },
+  { name = "TGT_SignalAutomatedBrowser",           action = "captcha" },
+  { name = "TGT_SignalBrowserInconsistency",       action = "captcha" },
+  { name = "TGT_TokenReuseIp",                     action = "count" },
+  { name = "TGT_ML_CoordinatedActivityMedium",     action = "count" },
+  { name = "TGT_ML_CoordinatedActivityHigh",       action = "count" },
+]
+
+# 2. AWS-AWSManagedRulesAmazonIpReputationList — WCU: 25
+enable_ip_reputation   = true
+ip_reputation_action   = "count"
+ip_reputation_priority = 25
+
+ip_reputation_rule_action_overrides = [
+  # TODO: add sub-rule overrides
+]
+
+# 3. AWS-AWSManagedRulesAnonymousIpList — WCU: 50
+enable_anonymous_ip   = true
+anonymous_ip_action   = "count"
+anonymous_ip_priority = 35
+
+anonymous_ip_rule_action_overrides = [
+  # TODO: add sub-rule overrides
+]
+
+# 4. AWS-AWSManagedRulesCommonRuleSet — WCU: 700
+enable_aws_managed_rules   = true
+aws_managed_rules_action   = "count"
+aws_managed_rules_priority = 9
+
+aws_managed_rules_rule_action_overrides = [
+  # TODO: add sub-rule overrides
+]
+
+# 5. AWS-AWSManagedRulesKnownBadInputsRuleSet — WCU: 200
+enable_known_bad_inputs   = true
+known_bad_inputs_action   = "count"
+known_bad_inputs_priority = 15
+
+known_bad_inputs_rule_action_overrides = [
+  # TODO: add sub-rule overrides
+]
+
+# 6. AWS-AWSManagedRulesLinuxRuleSet — WCU: 200
+enable_linux_protection   = true
+linux_protection_action   = "count"
+linux_protection_priority = 50
+
+linux_protection_rule_action_overrides = [
+  # TODO: add sub-rule overrides
+]
+
+# 7. AWS-AWSManagedRulesSQLiRuleSet — WCU: 200
+enable_sql_injection_protection = true
+sql_injection_protection_action = "count"
+sql_injection_priority          = 20
+
+sql_injection_rule_action_overrides = [
+  # TODO: add sub-rule overrides
+]
+
+# =============================================================================
+# Custom Rules (disabled by default — enable as needed)
+# =============================================================================
+
+enable_block_admin   = false
+block_admin_priority = 75
+block_admin_paths    = ["/admin", "/wp-admin", "/administrator", "/phpmyadmin"]
+
+enable_block_git   = false
+block_git_priority = 76
+
+enable_block_specific_urls   = false
+block_specific_urls_priority = 77
+blocked_urls                 = []
+
+enable_block_extensions   = false
+block_extensions_priority = 78
+blocked_extensions        = []
+
+enable_block_african_countries     = false
+block_african_countries_priority   = 80
+block_african_countries_priority_2 = 801
+african_country_codes_1            = []
+african_country_codes_2            = []
+
+enable_block_south_america   = false
+block_south_america_priority = 81
+south_america_country_codes  = []
+
+enable_block_selected_countries_1   = false
+block_selected_countries_1_priority = 82
+selected_country_codes_1            = []
+
+enable_block_selected_countries_2   = false
+block_selected_countries_2_priority = 83
+selected_country_codes_2            = []
+
+enable_allow_country_us   = false
+allow_country_us_priority = 84
+
+enable_allow_specific_urls   = false
+allow_specific_urls_priority = 3
+allowed_urls                 = []
+
+# =============================================================================
+# Rate Limiting
+# =============================================================================
+enable_rate_limiting   = true
+rate_limiting_action   = "count"
+rate_limiting_priority = 40
+rate_limit_threshold   = 2000
+
+# =============================================================================
+# IP Allow / Block Lists
+# =============================================================================
+allowlist_ips      = []
+blocklist_ips      = []
+allowlist_priority = 5
+blocklist_priority = 30
+
+# =============================================================================
+# Logging
+# =============================================================================
+enable_waf_logging  = false
+log_destination_arn = ""
+
+# =============================================================================
+# Tags
+# =============================================================================
+tags = {
+  Environment = "dev"
+  ManagedBy   = "Terraform"
+  Project     = "b2c-microservices-waf-orch"
+}
