@@ -9,6 +9,11 @@ project     = "Popular-waf-np"
 environment = "dev"
 aws_region  = "us-east-1"
 
+# Backend
+bucket = "bizx2-rapyder-jenkins-waf-2026"
+key    = "waf-alb/b2c-microservices-waf-orch.tfstate"
+region = "us-east-1"
+
 # WAF Lifecycle
 create_waf           = true
 existing_web_acl_arn = ""
