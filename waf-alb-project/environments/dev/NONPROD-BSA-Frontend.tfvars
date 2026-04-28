@@ -172,12 +172,6 @@ enable_block_extensions   = false
 block_extensions_priority = 78
 blocked_extensions        = []
 
-enable_block_african_countries     = false
-block_african_countries_priority   = 80
-block_african_countries_priority_2 = 801
-african_country_codes_1            = []
-african_country_codes_2            = []
-
 enable_block_south_america   = false
 block_south_america_priority = 81
 south_america_country_codes  = []
