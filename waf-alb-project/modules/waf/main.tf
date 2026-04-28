@@ -37,58 +37,6 @@ resource "aws_wafv2_ip_set" "blocklist" {
 }
 
 # -----------------------------------------------------------------------------
-# Rule change tracker — forces WAF replacement when rule config changes
-# Workaround for AWS provider bug: https://github.com/hashicorp/terraform-provider-aws/issues/23992
-# -----------------------------------------------------------------------------
-resource "null_resource" "waf_rules_hash" {
-  count = var.create_waf ? 1 : 0
-
-  triggers = {
-    rules_hash = sha256(jsonencode({
-      default_action                             = var.default_action
-      enable_aws_managed_rules                   = var.enable_aws_managed_rules
-      aws_managed_rules_action                   = var.aws_managed_rules_action
-      aws_managed_rules_priority                 = var.aws_managed_rules_priority
-      aws_managed_rules_version                  = var.aws_managed_rules_version
-      aws_managed_rules_rule_action_overrides    = var.aws_managed_rules_rule_action_overrides
-      enable_sql_injection_protection            = var.enable_sql_injection_protection
-      sql_injection_protection_action            = var.sql_injection_protection_action
-      sql_injection_priority                     = var.sql_injection_priority
-      sql_injection_version                      = var.sql_injection_version
-      sql_injection_rule_action_overrides        = var.sql_injection_rule_action_overrides
-      enable_known_bad_inputs                    = var.enable_known_bad_inputs
-      known_bad_inputs_action                    = var.known_bad_inputs_action
-      known_bad_inputs_priority                  = var.known_bad_inputs_priority
-      known_bad_inputs_version                   = var.known_bad_inputs_version
-      known_bad_inputs_rule_action_overrides     = var.known_bad_inputs_rule_action_overrides
-      enable_ip_reputation                       = var.enable_ip_reputation
-      ip_reputation_action                       = var.ip_reputation_action
-      ip_reputation_priority                     = var.ip_reputation_priority
-      ip_reputation_rule_action_overrides        = var.ip_reputation_rule_action_overrides
-      enable_anonymous_ip                        = var.enable_anonymous_ip
-      anonymous_ip_action                        = var.anonymous_ip_action
-      anonymous_ip_priority                      = var.anonymous_ip_priority
-      anonymous_ip_rule_action_overrides         = var.anonymous_ip_rule_action_overrides
-      enable_bot_control                         = var.enable_bot_control
-      bot_control_action                         = var.bot_control_action
-      bot_control_priority                       = var.bot_control_priority
-      bot_control_version                        = var.bot_control_version
-      bot_control_rule_action_overrides          = var.bot_control_rule_action_overrides
-      enable_linux_protection                    = var.enable_linux_protection
-      linux_protection_action                    = var.linux_protection_action
-      linux_protection_priority                  = var.linux_protection_priority
-      linux_protection_version                   = var.linux_protection_version
-      linux_protection_rule_action_overrides     = var.linux_protection_rule_action_overrides
-      enable_allow_in_us                         = var.enable_allow_in_us
-      allow_in_us_priority                       = var.allow_in_us_priority
-      allow_in_us_country_codes                  = var.allow_in_us_country_codes
-      allowlist_ips                              = var.allowlist_ips
-      blocklist_ips                              = var.blocklist_ips
-    }))
-  }
-}
-
-# -----------------------------------------------------------------------------
 # WAF Web ACL
 # Only manages lifecycle when explicitly told to create or destroy
 # -----------------------------------------------------------------------------
@@ -109,15 +57,13 @@ resource "aws_wafv2_web_acl" "this" {
     }
   }
 
-  # Workaround for AWS provider bug with aws_wafv2_web_acl set-based rule hashing:
+  # ignore_changes = [rule] is required to avoid AWS provider bug:
   # https://github.com/hashicorp/terraform-provider-aws/issues/23992
-  # ignore_changes prevents the inconsistent plan error.
-  # terraform_data.waf_rules_hash triggers replacement when rules actually change.
+  # The IN-US geo rule is updated separately via null_resource.update_in_us_rule below.
   lifecycle {
     prevent_destroy       = false
     create_before_destroy = false
     ignore_changes        = [rule]
-    replace_triggered_by  = [null_resource.waf_rules_hash[0]]
   }
 
   # ---- AWS Managed Rules ----
@@ -1228,7 +1174,83 @@ resource "aws_wafv2_web_acl" "this" {
 }
 
 # -----------------------------------------------------------------------------
-# WAF Logging Configuration (optional)
+# IN-US rule updater — surgically updates only the IN-US geo rule via AWS CLI
+# Triggers whenever allow_in_us_country_codes changes, without touching other rules
+# -----------------------------------------------------------------------------
+resource "null_resource" "update_in_us_rule" {
+  count = var.create_waf && var.enable_allow_in_us ? 1 : 0
+
+  triggers = {
+    country_codes = join(",", sort(var.allow_in_us_country_codes))
+    priority      = var.allow_in_us_priority
+    web_acl_name  = "${local.name_prefix}-web-acl"
+  }
+
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = <<-EOF
+      set -e
+      REGION="${var.aws_region}"
+      ACL_NAME="${local.name_prefix}-web-acl"
+
+      # Get current WebACL details
+      ACL_INFO=$(aws wafv2 list-web-acls --scope REGIONAL --region $REGION \
+        --query "WebACLs[?Name=='$ACL_NAME']|[0]" --output json)
+      ACL_ID=$(echo $ACL_INFO | python3 -c "import sys,json; print(json.load(sys.stdin)['Id'])")
+      ACL_ARN=$(echo $ACL_INFO | python3 -c "import sys,json; print(json.load(sys.stdin)['ARN'])")
+
+      # Get lock token and current rules
+      ACL=$(aws wafv2 get-web-acl --name $ACL_NAME --scope REGIONAL --id $ACL_ID --region $REGION)
+      LOCK_TOKEN=$(echo $ACL | python3 -c "import sys,json; print(json.load(sys.stdin)['LockToken'])")
+      RULES=$(echo $ACL | python3 -c "import sys,json; d=json.load(sys.stdin); print(json.dumps(d['WebACL']['Rules']))")
+
+      # Build updated country codes JSON array
+      CODES='${jsonencode(var.allow_in_us_country_codes)}'
+
+      # Update or insert the IN-US rule using Python
+      UPDATED_RULES=$(python3 -c "
+import json, sys
+rules = json.loads('$RULES')
+codes = json.loads('$CODES')
+in_us = {
+  'Name': 'IN-US',
+  'Priority': ${var.allow_in_us_priority},
+  'Statement': {'GeoMatchStatement': {'CountryCodes': codes}},
+  'Action': {'Allow': {}},
+  'VisibilityConfig': {
+    'SampledRequestsEnabled': True,
+    'CloudWatchMetricsEnabled': True,
+    'MetricName': 'IN-US'
+  }
+}
+rules = [r for r in rules if r['Name'] != 'IN-US']
+rules.append(in_us)
+print(json.dumps(rules))
+")
+
+      # Get default action
+      DEFAULT_ACTION=$(echo $ACL | python3 -c "import sys,json; d=json.load(sys.stdin); print(json.dumps(d['WebACL']['DefaultAction']))")
+      VISIBILITY=$(echo $ACL | python3 -c "import sys,json; d=json.load(sys.stdin); print(json.dumps(d['WebACL']['VisibilityConfig']))")
+      DESCRIPTION=$(echo $ACL | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['WebACL'].get('Description',''))")
+
+      # Apply the update
+      aws wafv2 update-web-acl \
+        --name $ACL_NAME \
+        --scope REGIONAL \
+        --id $ACL_ID \
+        --region $REGION \
+        --lock-token $LOCK_TOKEN \
+        --default-action "$DEFAULT_ACTION" \
+        --rules "$UPDATED_RULES" \
+        --visibility-config "$VISIBILITY" \
+        --description "$DESCRIPTION"
+
+      echo "IN-US rule updated with country codes: ${join(",", var.allow_in_us_country_codes)}"
+    EOF
+  }
+
+  depends_on = [aws_wafv2_web_acl.this]
+}
 # -----------------------------------------------------------------------------
 resource "aws_wafv2_web_acl_logging_configuration" "this" {
   count                   = var.create_waf && var.enable_waf_logging && var.log_destination_arn != "" ? 1 : 0

@@ -31,6 +31,7 @@ module "waf" {
   project     = var.project
   environment = var.environment
   tags        = var.tags
+  aws_region  = var.aws_region
 
   # WAF lifecycle flags
   create_waf           = var.create_waf
