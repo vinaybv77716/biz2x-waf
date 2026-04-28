@@ -209,13 +209,13 @@ rate_limit_threshold   = 2000
 # keybank-frontend-prod-allowIP — Priority 0
 # References existing IP set: keybank-frontend-PROD-AllowIP
 allowlist_ips        = []
-allowlist_ip_set_arn = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/keybank-frontend-PROD-AllowIP/REPLACE-WITH-IPSET-ID"
+allowlist_ip_set_arn = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/keybank-frontend-PROD-AllowIP/584d416a-c92c-4dee-9aad-515f0119d5b2"
 allowlist_priority   = 0
 
 # VPN-AllowIp — Priority 1
 # References existing IP set: site-24and7-AllowIP
 vpn_allowlist_ips        = []
-vpn_allowlist_ip_set_arn = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/site-24and7-AllowIP/REPLACE-WITH-IPSET-ID"
+vpn_allowlist_ip_set_arn = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/site-24and7-AllowIP/a7003d71-9124-4d08-bfbc-db439027eae3"
 vpn_allowlist_priority   = 1
 
 blocklist_ips      = []
