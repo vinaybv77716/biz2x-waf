@@ -218,7 +218,7 @@ allowlist_ips      = [
 allowlist_priority = 0
 
 # VPN-AllowIp — Priority 1
-vpn_allowlist_ips      = []      # Add VPN IPs here e.g. ["5.6.7.8/32"]
+vpn_allowlist_ips      = ["144.121.234.242/32"]      # Add VPN IPs here e.g. ["5.6.7.8/32"]
 vpn_allowlist_priority = 1
 
 blocklist_ips      = []
