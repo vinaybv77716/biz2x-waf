@@ -15,7 +15,7 @@ locals {
 # IP Sets (optional - used in rules)
 # -----------------------------------------------------------------------------
 resource "aws_wafv2_ip_set" "allowlist" {
-  count              = var.create_waf && length(var.allowlist_ips) > 0 ? 1 : 0
+  count              = var.create_waf && length(var.allowlist_ips) > 0 && var.allowlist_ip_set_arn == "" ? 1 : 0
   name               = "${local.name_prefix}-allowlist"
   description        = "Allowlisted IPs for ${local.name_prefix}"
   scope              = "REGIONAL"
@@ -26,7 +26,7 @@ resource "aws_wafv2_ip_set" "allowlist" {
 }
 
 resource "aws_wafv2_ip_set" "vpn_allowlist" {
-  count              = var.create_waf && length(var.vpn_allowlist_ips) > 0 ? 1 : 0
+  count              = var.create_waf && length(var.vpn_allowlist_ips) > 0 && var.vpn_allowlist_ip_set_arn == "" ? 1 : 0
   name               = "${local.name_prefix}-vpn-allowlist"
   description        = "VPN Allowlisted IPs for ${local.name_prefix}"
   scope              = "REGIONAL"
@@ -745,11 +745,11 @@ resource "aws_wafv2_web_acl" "this" {
     }
   }
 
-  # ---- IP Allowlist Rule ----
+  # ---- IP Allowlist Rule (keybank-frontend-prod-allowIP) ----
   dynamic "rule" {
-    for_each = var.create_waf && length(var.allowlist_ips) > 0 ? [1] : []
+    for_each = var.create_waf && (length(var.allowlist_ips) > 0 || var.allowlist_ip_set_arn != "") ? [1] : []
     content {
-      name     = "Allow-IPs"
+      name     = "keybank-frontend-prod-allowIP"
       priority = var.allowlist_priority
 
       action {
@@ -758,13 +758,13 @@ resource "aws_wafv2_web_acl" "this" {
 
       statement {
         ip_set_reference_statement {
-          arn = aws_wafv2_ip_set.allowlist[0].arn
+          arn = var.allowlist_ip_set_arn != "" ? var.allowlist_ip_set_arn : aws_wafv2_ip_set.allowlist[0].arn
         }
       }
 
       visibility_config {
         cloudwatch_metrics_enabled = true
-        metric_name                = "Allow-IPs"
+        metric_name                = "keybank-frontend-prod-allowIP"
         sampled_requests_enabled   = true
       }
     }
@@ -772,7 +772,7 @@ resource "aws_wafv2_web_acl" "this" {
 
   # ---- VPN IP Allowlist Rule ----
   dynamic "rule" {
-    for_each = var.create_waf && length(var.vpn_allowlist_ips) > 0 ? [1] : []
+    for_each = var.create_waf && (length(var.vpn_allowlist_ips) > 0 || var.vpn_allowlist_ip_set_arn != "") ? [1] : []
     content {
       name     = "VPN-AllowIp"
       priority = var.vpn_allowlist_priority
@@ -783,7 +783,7 @@ resource "aws_wafv2_web_acl" "this" {
 
       statement {
         ip_set_reference_statement {
-          arn = aws_wafv2_ip_set.vpn_allowlist[0].arn
+          arn = var.vpn_allowlist_ip_set_arn != "" ? var.vpn_allowlist_ip_set_arn : aws_wafv2_ip_set.vpn_allowlist[0].arn
         }
       }
 

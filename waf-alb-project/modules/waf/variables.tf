@@ -528,9 +528,15 @@ variable "wordpress_protection_rule_action_overrides" {
 # -----------------------------------------------------------------------------
 
 variable "allowlist_ips" {
-  description = "List of IP CIDR blocks to always allow"
+  description = "List of IP CIDR blocks to always allow (creates a new IP set)"
   type        = list(string)
   default     = []
+}
+
+variable "allowlist_ip_set_arn" {
+  description = "ARN of an existing IP set to use for the allowlist rule. If set, allowlist_ips is ignored."
+  type        = string
+  default     = ""
 }
 
 variable "blocklist_ips" {
@@ -552,9 +558,15 @@ variable "blocklist_priority" {
 }
 
 variable "vpn_allowlist_ips" {
-  description = "List of VPN IP CIDR blocks to always allow (VPN-AllowIp rule)"
+  description = "List of VPN IP CIDR blocks to always allow (creates a new IP set)"
   type        = list(string)
   default     = []
+}
+
+variable "vpn_allowlist_ip_set_arn" {
+  description = "ARN of an existing IP set to use for the VPN allowlist rule. If set, vpn_allowlist_ips is ignored."
+  type        = string
+  default     = ""
 }
 
 variable "vpn_allowlist_priority" {

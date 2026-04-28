@@ -104,10 +104,12 @@ module "waf" {
 
   # IP lists
   allowlist_ips          = var.allowlist_ips
+  allowlist_ip_set_arn   = var.allowlist_ip_set_arn
   blocklist_ips          = var.blocklist_ips
   allowlist_priority     = var.allowlist_priority
   blocklist_priority     = var.blocklist_priority
   vpn_allowlist_ips      = var.vpn_allowlist_ips
+  vpn_allowlist_ip_set_arn = var.vpn_allowlist_ip_set_arn
   vpn_allowlist_priority = var.vpn_allowlist_priority
 
   # Custom rules
