@@ -51,6 +51,7 @@ module "waf" {
   sql_injection_protection_action            = var.sql_injection_protection_action
   sql_injection_priority                     = var.sql_injection_priority
   sql_injection_rule_action_overrides        = var.sql_injection_rule_action_overrides
+  sql_injection_version                      = var.sql_injection_version
   enable_known_bad_inputs                    = var.enable_known_bad_inputs
   known_bad_inputs_action                    = var.known_bad_inputs_action
   known_bad_inputs_priority                  = var.known_bad_inputs_priority
@@ -68,6 +69,7 @@ module "waf" {
   bot_control_priority                       = var.bot_control_priority
   bot_control_inspection_level               = var.bot_control_inspection_level
   bot_control_rule_action_overrides          = var.bot_control_rule_action_overrides
+  bot_control_version                        = var.bot_control_version
   enable_anti_ddos                           = var.enable_anti_ddos
   anti_ddos_action                           = var.anti_ddos_action
   anti_ddos_priority                         = var.anti_ddos_priority
@@ -76,6 +78,7 @@ module "waf" {
   linux_protection_action                    = var.linux_protection_action
   linux_protection_priority                  = var.linux_protection_priority
   linux_protection_rule_action_overrides     = var.linux_protection_rule_action_overrides
+  linux_protection_version                   = var.linux_protection_version
   enable_unix_protection                     = var.enable_unix_protection
   unix_protection_action                     = var.unix_protection_action
   unix_protection_priority                   = var.unix_protection_priority

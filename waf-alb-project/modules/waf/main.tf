@@ -141,6 +141,7 @@ resource "aws_wafv2_web_acl" "this" {
         managed_rule_group_statement {
           name        = "AWSManagedRulesSQLiRuleSet"
           vendor_name = "AWS"
+          version     = var.sql_injection_version != "" ? var.sql_injection_version : null
 
           dynamic "rule_action_override" {
             for_each = var.sql_injection_rule_action_overrides
@@ -333,6 +334,7 @@ resource "aws_wafv2_web_acl" "this" {
         managed_rule_group_statement {
           name        = "AWSManagedRulesBotControlRuleSet"
           vendor_name = "AWS"
+          version     = var.bot_control_version != "" ? var.bot_control_version : null
 
           managed_rule_group_configs {
             aws_managed_rules_bot_control_rule_set {
@@ -449,6 +451,7 @@ resource "aws_wafv2_web_acl" "this" {
         managed_rule_group_statement {
           name        = "AWSManagedRulesLinuxRuleSet"
           vendor_name = "AWS"
+          version     = var.linux_protection_version != "" ? var.linux_protection_version : null
 
           dynamic "rule_action_override" {
             for_each = var.linux_protection_rule_action_overrides

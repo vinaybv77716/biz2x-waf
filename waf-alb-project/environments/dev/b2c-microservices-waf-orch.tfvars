@@ -34,6 +34,7 @@ enable_bot_control           = true
 bot_control_action           = "block"
 bot_control_priority         = 0
 bot_control_inspection_level = "COMMON"
+bot_control_version          = "Version_1.0"
 
 bot_control_rule_action_overrides = [
   # Common rules
@@ -140,6 +141,7 @@ known_bad_inputs_rule_action_overrides = [
 enable_linux_protection   = true
 linux_protection_action   = "block"
 linux_protection_priority = 5
+linux_protection_version  = "Version_2.1"
 
 linux_protection_rule_action_overrides = [
   { name = "LFI_URIPATH",      action = "block" },
@@ -151,6 +153,7 @@ linux_protection_rule_action_overrides = [
 enable_sql_injection_protection = true
 sql_injection_protection_action = "block"
 sql_injection_priority          = 6
+sql_injection_version           = "Version_2.0"
 
 sql_injection_rule_action_overrides = [
   { name = "SQLi_QUERYARGUMENTS",              action = "block" },

@@ -135,6 +135,12 @@ variable "sql_injection_rule_action_overrides" {
   default = []
 }
 
+variable "sql_injection_version" {
+  description = "Version of AWSManagedRulesSQLiRuleSet (e.g. Version_2.0). Leave empty for default."
+  type        = string
+  default     = ""
+}
+
 variable "enable_rate_limiting" {
   description = "Enable rate-based blocking"
   type        = bool
@@ -304,6 +310,12 @@ variable "bot_control_rule_action_overrides" {
   default = []
 }
 
+variable "bot_control_version" {
+  description = "Version of AWSManagedRulesBotControlRuleSet (e.g. Version_1.0). Leave empty for default."
+  type        = string
+  default     = ""
+}
+
 variable "enable_anti_ddos" {
   description = "Enable AWS Managed Anti-DDoS Rule Set"
   type        = bool
@@ -364,6 +376,12 @@ variable "linux_protection_rule_action_overrides" {
     action = string # block | count | allow | captcha | challenge
   }))
   default = []
+}
+
+variable "linux_protection_version" {
+  description = "Version of AWSManagedRulesLinuxRuleSet (e.g. Version_2.1). Leave empty for default."
+  type        = string
+  default     = ""
 }
 
 variable "enable_unix_protection" {
