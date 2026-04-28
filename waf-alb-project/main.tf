@@ -103,14 +103,16 @@ module "waf" {
   rate_limit_threshold                       = var.rate_limit_threshold
 
   # IP lists
-  allowlist_ips          = var.allowlist_ips
-  allowlist_ip_set_arn   = var.allowlist_ip_set_arn
-  blocklist_ips          = var.blocklist_ips
-  allowlist_priority     = var.allowlist_priority
-  blocklist_priority     = var.blocklist_priority
-  vpn_allowlist_ips      = var.vpn_allowlist_ips
+  allowlist_ips            = var.allowlist_ips
+  allowlist_ip_set_name    = var.allowlist_ip_set_name
+  allowlist_ip_set_arn     = var.allowlist_ip_set_arn
+  blocklist_ips            = var.blocklist_ips
+  allowlist_priority       = var.allowlist_priority
+  blocklist_priority       = var.blocklist_priority
+  vpn_allowlist_ips        = var.vpn_allowlist_ips
+  vpn_allowlist_ip_set_name  = var.vpn_allowlist_ip_set_name
   vpn_allowlist_ip_set_arn = var.vpn_allowlist_ip_set_arn
-  vpn_allowlist_priority = var.vpn_allowlist_priority
+  vpn_allowlist_priority   = var.vpn_allowlist_priority
 
   # Custom rules
   enable_block_admin                  = var.enable_block_admin

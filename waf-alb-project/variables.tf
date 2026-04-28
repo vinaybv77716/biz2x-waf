@@ -549,6 +549,12 @@ variable "allowlist_ips" {
   default     = []
 }
 
+variable "allowlist_ip_set_name" {
+  description = "Custom name for the allowlist IP set. Defaults to <project>-<env>-allowlist if empty."
+  type        = string
+  default     = ""
+}
+
 variable "allowlist_ip_set_arn" {
   description = "ARN of an existing IP set to use for the allowlist rule. If set, allowlist_ips is ignored."
   type        = string
@@ -577,6 +583,12 @@ variable "vpn_allowlist_ips" {
   description = "List of VPN IP CIDR blocks to always allow (creates a new IP set)"
   type        = list(string)
   default     = []
+}
+
+variable "vpn_allowlist_ip_set_name" {
+  description = "Custom name for the VPN allowlist IP set. Defaults to <project>-<env>-vpn-allowlist if empty."
+  type        = string
+  default     = ""
 }
 
 variable "vpn_allowlist_ip_set_arn" {

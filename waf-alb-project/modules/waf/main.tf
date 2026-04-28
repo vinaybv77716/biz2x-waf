@@ -16,24 +16,24 @@ locals {
 # -----------------------------------------------------------------------------
 resource "aws_wafv2_ip_set" "allowlist" {
   count              = var.create_waf && length(var.allowlist_ips) > 0 && var.allowlist_ip_set_arn == "" ? 1 : 0
-  name               = "${local.name_prefix}-allowlist"
+  name               = var.allowlist_ip_set_name != "" ? var.allowlist_ip_set_name : "${local.name_prefix}-allowlist"
   description        = "Allowlisted IPs for ${local.name_prefix}"
   scope              = "REGIONAL"
   ip_address_version = "IPV4"
   addresses          = var.allowlist_ips
 
-  tags = merge(var.tags, { Name = "${local.name_prefix}-allowlist" })
+  tags = merge(var.tags, { Name = var.allowlist_ip_set_name != "" ? var.allowlist_ip_set_name : "${local.name_prefix}-allowlist" })
 }
 
 resource "aws_wafv2_ip_set" "vpn_allowlist" {
   count              = var.create_waf && length(var.vpn_allowlist_ips) > 0 && var.vpn_allowlist_ip_set_arn == "" ? 1 : 0
-  name               = "${local.name_prefix}-vpn-allowlist"
+  name               = var.vpn_allowlist_ip_set_name != "" ? var.vpn_allowlist_ip_set_name : "${local.name_prefix}-vpn-allowlist"
   description        = "VPN Allowlisted IPs for ${local.name_prefix}"
   scope              = "REGIONAL"
   ip_address_version = "IPV4"
   addresses          = var.vpn_allowlist_ips
 
-  tags = merge(var.tags, { Name = "${local.name_prefix}-vpn-allowlist" })
+  tags = merge(var.tags, { Name = var.vpn_allowlist_ip_set_name != "" ? var.vpn_allowlist_ip_set_name : "${local.name_prefix}-vpn-allowlist" })
 }
 
 resource "aws_wafv2_ip_set" "blocklist" {
