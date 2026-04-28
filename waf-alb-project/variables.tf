@@ -734,7 +734,7 @@ variable "allow_in_us_priority" {
 variable "allow_in_us_country_codes" {
   description = "List of country codes to allow for the IN-US rule"
   type        = list(string)
-  default     = ["IN", "US"]
+  #default     = ["IN", "US"]
 
   validation {
     condition     = alltrue([for c in var.allow_in_us_country_codes : length(c) == 2])
