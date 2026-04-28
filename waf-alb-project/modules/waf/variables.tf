@@ -551,6 +551,72 @@ variable "blocklist_priority" {
   default     = 30
 }
 
+variable "vpn_allowlist_ips" {
+  description = "List of VPN IP CIDR blocks to always allow (VPN-AllowIp rule)"
+  type        = list(string)
+  default     = []
+}
+
+variable "vpn_allowlist_priority" {
+  description = "Priority for VPN IP allowlist rule"
+  type        = number
+  default     = 1
+}
+
+# Geo Block — Europe
+variable "enable_block_europe" {
+  description = "Block requests from European countries"
+  type        = bool
+  default     = false
+}
+
+variable "block_europe_priority" {
+  type    = number
+  default = 3
+}
+
+variable "europe_country_codes" {
+  description = "ISO 3166-1 alpha-2 country codes for European countries to block"
+  type        = list(string)
+  default     = ["AL", "AD", "AT", "BY", "BE", "BA", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IS", "IE", "IT", "XK", "LV", "LI", "LT", "LU", "MT", "MD", "MC", "ME", "NL", "MK", "NO", "PL", "PT", "RO", "RU", "SM", "RS", "SK", "SI", "ES", "SE", "CH", "UA", "GB", "VA"]
+}
+
+# Geo Block — Asia
+variable "enable_block_asia" {
+  description = "Block requests from Asian countries"
+  type        = bool
+  default     = false
+}
+
+variable "block_asia_priority" {
+  type    = number
+  default = 4
+}
+
+variable "asia_country_codes" {
+  description = "ISO 3166-1 alpha-2 country codes for Asian countries to block"
+  type        = list(string)
+  default     = ["AF", "AM", "AZ", "BH", "BD", "BT", "BN", "KH", "CN", "GE", "IN", "ID", "IR", "IQ", "IL", "JP", "JO", "KZ", "KW", "KG", "LA", "LB", "MY", "MV", "MN", "MM", "NP", "KP", "OM", "PK", "PS", "PH", "QA", "SA", "SG", "LK", "SY", "TW", "TJ", "TH", "TL", "TR", "TM", "AE", "UZ", "VN", "YE"]
+}
+
+# Geo Block — Oceania
+variable "enable_block_oceania" {
+  description = "Block requests from Oceania countries"
+  type        = bool
+  default     = false
+}
+
+variable "block_oceania_priority" {
+  type    = number
+  default = 5
+}
+
+variable "oceania_country_codes" {
+  description = "ISO 3166-1 alpha-2 country codes for Oceania countries to block"
+  type        = list(string)
+  default     = ["AU", "FJ", "KI", "MH", "FM", "NR", "NZ", "PW", "PG", "WS", "SB", "TO", "TV", "VU"]
+}
+
 # -----------------------------------------------------------------------------
 # Custom Rules
 # -----------------------------------------------------------------------------

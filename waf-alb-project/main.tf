@@ -103,10 +103,12 @@ module "waf" {
   rate_limit_threshold                       = var.rate_limit_threshold
 
   # IP lists
-  allowlist_ips      = var.allowlist_ips
-  blocklist_ips      = var.blocklist_ips
-  allowlist_priority = var.allowlist_priority
-  blocklist_priority = var.blocklist_priority
+  allowlist_ips          = var.allowlist_ips
+  blocklist_ips          = var.blocklist_ips
+  allowlist_priority     = var.allowlist_priority
+  blocklist_priority     = var.blocklist_priority
+  vpn_allowlist_ips      = var.vpn_allowlist_ips
+  vpn_allowlist_priority = var.vpn_allowlist_priority
 
   # Custom rules
   enable_block_admin                  = var.enable_block_admin
@@ -128,6 +130,15 @@ module "waf" {
   enable_block_south_america          = var.enable_block_south_america
   block_south_america_priority        = var.block_south_america_priority
   south_america_country_codes         = var.south_america_country_codes
+  enable_block_europe                 = var.enable_block_europe
+  block_europe_priority               = var.block_europe_priority
+  europe_country_codes                = var.europe_country_codes
+  enable_block_asia                   = var.enable_block_asia
+  block_asia_priority                 = var.block_asia_priority
+  asia_country_codes                  = var.asia_country_codes
+  enable_block_oceania                = var.enable_block_oceania
+  block_oceania_priority              = var.block_oceania_priority
+  oceania_country_codes               = var.oceania_country_codes
   enable_block_selected_countries_1   = var.enable_block_selected_countries_1
   block_selected_countries_1_priority = var.block_selected_countries_1_priority
   selected_country_codes_1            = var.selected_country_codes_1

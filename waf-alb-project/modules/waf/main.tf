@@ -25,6 +25,17 @@ resource "aws_wafv2_ip_set" "allowlist" {
   tags = merge(var.tags, { Name = "${local.name_prefix}-allowlist" })
 }
 
+resource "aws_wafv2_ip_set" "vpn_allowlist" {
+  count              = var.create_waf && length(var.vpn_allowlist_ips) > 0 ? 1 : 0
+  name               = "${local.name_prefix}-vpn-allowlist"
+  description        = "VPN Allowlisted IPs for ${local.name_prefix}"
+  scope              = "REGIONAL"
+  ip_address_version = "IPV4"
+  addresses          = var.vpn_allowlist_ips
+
+  tags = merge(var.tags, { Name = "${local.name_prefix}-vpn-allowlist" })
+}
+
 resource "aws_wafv2_ip_set" "blocklist" {
   count              = var.create_waf && length(var.blocklist_ips) > 0 ? 1 : 0
   name               = "${local.name_prefix}-blocklist"
@@ -759,6 +770,31 @@ resource "aws_wafv2_web_acl" "this" {
     }
   }
 
+  # ---- VPN IP Allowlist Rule ----
+  dynamic "rule" {
+    for_each = var.create_waf && length(var.vpn_allowlist_ips) > 0 ? [1] : []
+    content {
+      name     = "VPN-AllowIp"
+      priority = var.vpn_allowlist_priority
+
+      action {
+        allow {}
+      }
+
+      statement {
+        ip_set_reference_statement {
+          arn = aws_wafv2_ip_set.vpn_allowlist[0].arn
+        }
+      }
+
+      visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "VPN-AllowIp"
+        sampled_requests_enabled   = true
+      }
+    }
+  }
+
   # ---- Block Admin Paths ----
   dynamic "rule" {
     for_each = var.enable_block_admin && length(var.block_admin_paths) >= 2 ? [1] : []
@@ -916,7 +952,7 @@ resource "aws_wafv2_web_acl" "this" {
   dynamic "rule" {
     for_each = var.enable_block_african_countries && length(var.african_country_codes_1) > 0 ? [1] : []
     content {
-      name     = "Block-African-Countries-1"
+      name     = "GEORestrictionAfrica"
       priority = var.block_african_countries_priority
 
       action {
@@ -931,7 +967,7 @@ resource "aws_wafv2_web_acl" "this" {
 
       visibility_config {
         cloudwatch_metrics_enabled = true
-        metric_name                = "Block-African-Countries-1"
+        metric_name                = "GEORestrictionAfrica"
         sampled_requests_enabled   = true
       }
     }
@@ -982,6 +1018,81 @@ resource "aws_wafv2_web_acl" "this" {
       visibility_config {
         cloudwatch_metrics_enabled = true
         metric_name                = "Block-SouthAmerica-Countries"
+        sampled_requests_enabled   = true
+      }
+    }
+  }
+
+  # ---- GEORestriction-Europe ----
+  dynamic "rule" {
+    for_each = var.enable_block_europe && length(var.europe_country_codes) > 0 ? [1] : []
+    content {
+      name     = "GEORestriction-Europe"
+      priority = var.block_europe_priority
+
+      action {
+        block {}
+      }
+
+      statement {
+        geo_match_statement {
+          country_codes = var.europe_country_codes
+        }
+      }
+
+      visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "GEORestriction-Europe"
+        sampled_requests_enabled   = true
+      }
+    }
+  }
+
+  # ---- GEORestriction-Asia ----
+  dynamic "rule" {
+    for_each = var.enable_block_asia && length(var.asia_country_codes) > 0 ? [1] : []
+    content {
+      name     = "GEORestriction-Asia"
+      priority = var.block_asia_priority
+
+      action {
+        block {}
+      }
+
+      statement {
+        geo_match_statement {
+          country_codes = var.asia_country_codes
+        }
+      }
+
+      visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "GEORestriction-Asia"
+        sampled_requests_enabled   = true
+      }
+    }
+  }
+
+  # ---- GEORestriction-Oceania ----
+  dynamic "rule" {
+    for_each = var.enable_block_oceania && length(var.oceania_country_codes) > 0 ? [1] : []
+    content {
+      name     = "GEORestriction-Oceania"
+      priority = var.block_oceania_priority
+
+      action {
+        block {}
+      }
+
+      statement {
+        geo_match_statement {
+          country_codes = var.oceania_country_codes
+        }
+      }
+
+      visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "GEORestriction-Oceania"
         sampled_requests_enabled   = true
       }
     }
