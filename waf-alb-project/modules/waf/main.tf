@@ -1069,6 +1069,31 @@ resource "aws_wafv2_web_acl" "this" {
     }
   }
 
+  # ---- Allow IN-US (allow traffic from India and United States) ----
+  dynamic "rule" {
+    for_each = var.enable_allow_in_us ? [1] : []
+    content {
+      name     = "IN-US"
+      priority = var.allow_in_us_priority
+
+      action {
+        allow {}
+      }
+
+      statement {
+        geo_match_statement {
+          country_codes = ["IN", "US"]
+        }
+      }
+
+      visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "IN-US"
+        sampled_requests_enabled   = true
+      }
+    }
+  }
+
   # ---- Allow Specific URLs ----
   dynamic "rule" {
     for_each = var.enable_allow_specific_urls && length(var.allowed_urls) >= 2 ? [1] : []

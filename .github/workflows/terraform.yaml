@@ -26,7 +26,7 @@ on:
       terraform_variable_file:
         description: "Terraform variable file name"
         required: false
-        default: "b2c-microservices-waf-orch.tfvars"
+        default: "sba-demo-ui.tfvars"
 
 env:
   TF_IN_AUTOMATION: "true"

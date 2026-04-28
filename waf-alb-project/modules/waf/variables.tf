@@ -709,8 +709,16 @@ variable "allow_country_us_priority" {
   default = 84
 }
 
-# Allow Specific URLs (bypass other rules)
-variable "enable_allow_specific_urls" {
+variable "enable_allow_in_us" {
+  description = "Allow traffic from India (IN) and United States (US)"
+  type        = bool
+  default     = false
+}
+
+variable "allow_in_us_priority" {
+  type    = number
+  default = 7
+}
   description = "Allow specific URL paths, bypassing other rules"
   type        = bool
   default     = false

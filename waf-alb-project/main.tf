@@ -134,6 +134,8 @@ module "waf" {
   selected_country_codes_2            = var.selected_country_codes_2
   enable_allow_country_us             = var.enable_allow_country_us
   allow_country_us_priority           = var.allow_country_us_priority
+  enable_allow_in_us                  = var.enable_allow_in_us
+  allow_in_us_priority                = var.allow_in_us_priority
   enable_allow_specific_urls          = var.enable_allow_specific_urls
   allow_specific_urls_priority        = var.allow_specific_urls_priority
   allowed_urls                        = var.allowed_urls
