@@ -735,6 +735,11 @@ variable "allow_in_us_country_codes" {
   description = "List of country codes to allow for the IN-US rule"
   type        = list(string)
   default     = ["IN", "US"]
+
+  validation {
+    condition     = alltrue([for c in var.allow_in_us_country_codes : length(c) == 2])
+    error_message = "All country codes must be exactly 2 characters (ISO 3166-1 alpha-2)."
+  }
 }
 
 variable "enable_allow_specific_urls" {
