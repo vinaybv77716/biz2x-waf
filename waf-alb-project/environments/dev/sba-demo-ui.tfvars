@@ -1,5 +1,5 @@
 
-sba-demo-ui# =============================================================================
+#sba-demo-ui# =============================================================================
 # b2c-microservices-waf-orch — DEV WAF Configuration
 # Rules: BotControl, IpReputation, AnonymousIp, CommonRuleSet,
 #        KnownBadInputs, LinuxRuleSet, SQLiRuleSet
