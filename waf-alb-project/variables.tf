@@ -731,6 +731,12 @@ variable "allow_in_us_priority" {
   default = 7
 }
 
+variable "allow_in_us_country_codes" {
+  description = "List of country codes to allow for the IN-US rule"
+  type        = list(string)
+  default     = ["IN", "US"]
+}
+
 variable "enable_allow_specific_urls" {
   description = "Allow specific URL paths, bypassing other rules"
   type        = bool

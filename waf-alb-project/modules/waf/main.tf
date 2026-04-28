@@ -1082,7 +1082,7 @@ resource "aws_wafv2_web_acl" "this" {
 
       statement {
         geo_match_statement {
-          country_codes = ["IN", "US"]
+          country_codes = var.allow_in_us_country_codes
         }
       }
 
