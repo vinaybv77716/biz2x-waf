@@ -207,7 +207,14 @@ rate_limit_threshold   = 2000
 # IP Allow / Block Lists
 # =============================================================================
 # keybank-frontend-prod-allowIP — Priority 0
-allowlist_ips      = []          # Add IPs here e.g. ["1.2.3.4/32"]
+allowlist_ips      = [
+  "125.20.89.58/32",
+  "111.93.242.74/32",
+  "182.74.72.50/32",
+  "123.63.212.74/32",
+  "125.20.89.56/29",
+  "144.121.234.242/32"
+]
 allowlist_priority = 0
 
 # VPN-AllowIp — Priority 1
@@ -226,7 +233,6 @@ enable_block_african_countries     = true
 block_african_countries_priority   = 2
 block_african_countries_priority_2 = 21
 african_country_codes_1            = ["DZ","AO","BJ","BW","BF","BI","CM","CV","CF","TD","KM","CG","CD","CI","DJ","EG","GQ","ER","ET","GA","GM","GH","GN","GW","KE","LS","LR","LY","MG","MW","ML","MR","MU","MA","MZ","NA","NE","NG","RW","ST","SN","SL","SO","ZA","SS","SD","SZ","TZ","TG","TN"]
-african_country_codes_2            = ["UG","ZM","ZW"]
 
 # GEORestriction-Europe — Priority 3
 enable_block_europe   = true
