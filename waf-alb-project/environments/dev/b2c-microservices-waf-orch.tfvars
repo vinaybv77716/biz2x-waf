@@ -89,6 +89,7 @@ anonymous_ip_rule_action_overrides = [
 enable_aws_managed_rules   = true
 aws_managed_rules_action   = "block"
 aws_managed_rules_priority = 3
+aws_managed_rules_version  = "Version_1.6"
 
 aws_managed_rules_rule_action_overrides = [
   { name = "NoUserAgent_HEADER",                   action = "block" },

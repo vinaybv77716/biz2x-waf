@@ -87,6 +87,7 @@ resource "aws_wafv2_web_acl" "this" {
         managed_rule_group_statement {
           name        = "AWSManagedRulesCommonRuleSet"
           vendor_name = "AWS"
+          version     = var.aws_managed_rules_version != "" ? var.aws_managed_rules_version : null
 
           # Per-sub-rule action overrides (e.g. force a specific sub-rule to count)
           dynamic "rule_action_override" {
