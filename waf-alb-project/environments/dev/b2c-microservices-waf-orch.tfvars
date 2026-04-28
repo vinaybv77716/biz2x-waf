@@ -31,7 +31,7 @@ default_action = "allow"
 # 1. AWS-AWSManagedRulesBotControlRuleSet — WCU: 50
 # Inspection: Common | Version: Default (Version_1.0)
 enable_bot_control           = true
-bot_control_action           = "count"
+bot_control_action           = "block"
 bot_control_priority         = 0
 bot_control_inspection_level = "COMMON"
 
@@ -66,7 +66,7 @@ bot_control_rule_action_overrides = [
 
 # 2. AWS-AWSManagedRulesAmazonIpReputationList — WCU: 25
 enable_ip_reputation   = true
-ip_reputation_action   = "count"
+ip_reputation_action   = "block"
 ip_reputation_priority = 1
 
 ip_reputation_rule_action_overrides = [
@@ -77,7 +77,7 @@ ip_reputation_rule_action_overrides = [
 
 # 3. AWS-AWSManagedRulesAnonymousIpList — WCU: 50
 enable_anonymous_ip   = true
-anonymous_ip_action   = "count"
+anonymous_ip_action   = "block"
 anonymous_ip_priority = 2
 
 anonymous_ip_rule_action_overrides = [
