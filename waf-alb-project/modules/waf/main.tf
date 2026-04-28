@@ -40,50 +40,52 @@ resource "aws_wafv2_ip_set" "blocklist" {
 # Rule change tracker — forces WAF replacement when rule config changes
 # Workaround for AWS provider bug: https://github.com/hashicorp/terraform-provider-aws/issues/23992
 # -----------------------------------------------------------------------------
-resource "terraform_data" "waf_rules_hash" {
+resource "null_resource" "waf_rules_hash" {
   count = var.create_waf ? 1 : 0
 
-  input = sha256(jsonencode({
-    default_action                             = var.default_action
-    enable_aws_managed_rules                   = var.enable_aws_managed_rules
-    aws_managed_rules_action                   = var.aws_managed_rules_action
-    aws_managed_rules_priority                 = var.aws_managed_rules_priority
-    aws_managed_rules_version                  = var.aws_managed_rules_version
-    aws_managed_rules_rule_action_overrides    = var.aws_managed_rules_rule_action_overrides
-    enable_sql_injection_protection            = var.enable_sql_injection_protection
-    sql_injection_protection_action            = var.sql_injection_protection_action
-    sql_injection_priority                     = var.sql_injection_priority
-    sql_injection_version                      = var.sql_injection_version
-    sql_injection_rule_action_overrides        = var.sql_injection_rule_action_overrides
-    enable_known_bad_inputs                    = var.enable_known_bad_inputs
-    known_bad_inputs_action                    = var.known_bad_inputs_action
-    known_bad_inputs_priority                  = var.known_bad_inputs_priority
-    known_bad_inputs_version                   = var.known_bad_inputs_version
-    known_bad_inputs_rule_action_overrides     = var.known_bad_inputs_rule_action_overrides
-    enable_ip_reputation                       = var.enable_ip_reputation
-    ip_reputation_action                       = var.ip_reputation_action
-    ip_reputation_priority                     = var.ip_reputation_priority
-    ip_reputation_rule_action_overrides        = var.ip_reputation_rule_action_overrides
-    enable_anonymous_ip                        = var.enable_anonymous_ip
-    anonymous_ip_action                        = var.anonymous_ip_action
-    anonymous_ip_priority                      = var.anonymous_ip_priority
-    anonymous_ip_rule_action_overrides         = var.anonymous_ip_rule_action_overrides
-    enable_bot_control                         = var.enable_bot_control
-    bot_control_action                         = var.bot_control_action
-    bot_control_priority                       = var.bot_control_priority
-    bot_control_version                        = var.bot_control_version
-    bot_control_rule_action_overrides          = var.bot_control_rule_action_overrides
-    enable_linux_protection                    = var.enable_linux_protection
-    linux_protection_action                    = var.linux_protection_action
-    linux_protection_priority                  = var.linux_protection_priority
-    linux_protection_version                   = var.linux_protection_version
-    linux_protection_rule_action_overrides     = var.linux_protection_rule_action_overrides
-    enable_allow_in_us                         = var.enable_allow_in_us
-    allow_in_us_priority                       = var.allow_in_us_priority
-    allow_in_us_country_codes                  = var.allow_in_us_country_codes
-    allowlist_ips                              = var.allowlist_ips
-    blocklist_ips                              = var.blocklist_ips
-  }))
+  triggers = {
+    rules_hash = sha256(jsonencode({
+      default_action                             = var.default_action
+      enable_aws_managed_rules                   = var.enable_aws_managed_rules
+      aws_managed_rules_action                   = var.aws_managed_rules_action
+      aws_managed_rules_priority                 = var.aws_managed_rules_priority
+      aws_managed_rules_version                  = var.aws_managed_rules_version
+      aws_managed_rules_rule_action_overrides    = var.aws_managed_rules_rule_action_overrides
+      enable_sql_injection_protection            = var.enable_sql_injection_protection
+      sql_injection_protection_action            = var.sql_injection_protection_action
+      sql_injection_priority                     = var.sql_injection_priority
+      sql_injection_version                      = var.sql_injection_version
+      sql_injection_rule_action_overrides        = var.sql_injection_rule_action_overrides
+      enable_known_bad_inputs                    = var.enable_known_bad_inputs
+      known_bad_inputs_action                    = var.known_bad_inputs_action
+      known_bad_inputs_priority                  = var.known_bad_inputs_priority
+      known_bad_inputs_version                   = var.known_bad_inputs_version
+      known_bad_inputs_rule_action_overrides     = var.known_bad_inputs_rule_action_overrides
+      enable_ip_reputation                       = var.enable_ip_reputation
+      ip_reputation_action                       = var.ip_reputation_action
+      ip_reputation_priority                     = var.ip_reputation_priority
+      ip_reputation_rule_action_overrides        = var.ip_reputation_rule_action_overrides
+      enable_anonymous_ip                        = var.enable_anonymous_ip
+      anonymous_ip_action                        = var.anonymous_ip_action
+      anonymous_ip_priority                      = var.anonymous_ip_priority
+      anonymous_ip_rule_action_overrides         = var.anonymous_ip_rule_action_overrides
+      enable_bot_control                         = var.enable_bot_control
+      bot_control_action                         = var.bot_control_action
+      bot_control_priority                       = var.bot_control_priority
+      bot_control_version                        = var.bot_control_version
+      bot_control_rule_action_overrides          = var.bot_control_rule_action_overrides
+      enable_linux_protection                    = var.enable_linux_protection
+      linux_protection_action                    = var.linux_protection_action
+      linux_protection_priority                  = var.linux_protection_priority
+      linux_protection_version                   = var.linux_protection_version
+      linux_protection_rule_action_overrides     = var.linux_protection_rule_action_overrides
+      enable_allow_in_us                         = var.enable_allow_in_us
+      allow_in_us_priority                       = var.allow_in_us_priority
+      allow_in_us_country_codes                  = var.allow_in_us_country_codes
+      allowlist_ips                              = var.allowlist_ips
+      blocklist_ips                              = var.blocklist_ips
+    }))
+  }
 }
 
 # -----------------------------------------------------------------------------
@@ -115,7 +117,7 @@ resource "aws_wafv2_web_acl" "this" {
     prevent_destroy       = false
     create_before_destroy = false
     ignore_changes        = [rule]
-    replace_triggered_by  = [terraform_data.waf_rules_hash[0]]
+    replace_triggered_by  = [null_resource.waf_rules_hash[0]]
   }
 
   # ---- AWS Managed Rules ----

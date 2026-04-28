@@ -64,6 +64,7 @@ module "waf" {
   enable_anonymous_ip                        = var.enable_anonymous_ip
   anonymous_ip_action                        = var.anonymous_ip_action
   anonymous_ip_priority                      = var.anonymous_ip_priority
+  anonymous_ip_rule_action_overrides         = var.anonymous_ip_rule_action_overrides
   enable_bot_control                         = var.enable_bot_control
   bot_control_action                         = var.bot_control_action
   bot_control_priority                       = var.bot_control_priority

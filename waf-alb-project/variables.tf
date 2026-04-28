@@ -291,6 +291,15 @@ variable "anonymous_ip_action" {
   }
 }
 
+variable "anonymous_ip_rule_action_overrides" {
+  description = "Per-sub-rule action overrides for AWSManagedRulesAnonymousIpList"
+  type = list(object({
+    name   = string
+    action = string
+  }))
+  default = []
+}
+
 variable "enable_bot_control" {
   description = "Enable AWS Managed Bot Control Rule Set"
   type        = bool
