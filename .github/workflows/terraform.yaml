@@ -16,8 +16,8 @@ on:
         required: true
         type: choice
         options:
-          - plan
           - apply
+          - plan
           - destroy
       aws_region:
         description: "AWS Region"

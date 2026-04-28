@@ -46,6 +46,7 @@ module "waf" {
   aws_managed_rules_action                   = var.aws_managed_rules_action
   aws_managed_rules_priority                 = var.aws_managed_rules_priority
   aws_managed_rules_rule_action_overrides    = var.aws_managed_rules_rule_action_overrides
+  aws_managed_rules_version                  = var.aws_managed_rules_version
   enable_sql_injection_protection            = var.enable_sql_injection_protection
   sql_injection_protection_action            = var.sql_injection_protection_action
   sql_injection_priority                     = var.sql_injection_priority

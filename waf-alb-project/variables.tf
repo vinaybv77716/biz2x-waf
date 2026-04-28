@@ -122,6 +122,12 @@ variable "aws_managed_rules_rule_action_overrides" {
   default = []
 }
 
+variable "aws_managed_rules_version" {
+  description = "Version of AWSManagedRulesCommonRuleSet (e.g. Version_1.6). Leave empty for default."
+  type        = string
+  default     = ""
+}
+
 variable "enable_sql_injection_protection" {
   description = "Enable AWS Managed SQL Injection Rule Set"
   type        = bool
