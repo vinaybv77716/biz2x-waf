@@ -232,22 +232,23 @@ blocklist_priority = 30
 enable_block_african_countries     = true
 block_african_countries_priority   = 2
 block_african_countries_priority_2 = 21
-african_country_codes_1            = ["DZ","AO","BJ","BW","BF","BI","CM","CV","CF","TD","KM","CG","CD","CI","DJ","EG","GQ","ER","ET","GA","GM","GH","GN","GW","KE","LS","LR","LY","MG","MW","ML","MR","MU","MA","MZ","NA","NE","NG","RW","ST","SN","SL","SO","ZA","SS","SD","SZ","TZ","TG","TN"]
+african_country_codes_1            = ["DZ","AO","BJ","BW","BF","BI","CV","CM","CF","TD","KM","CG","CD","DJ","EG","GQ","ER","SZ","ET","GA","GM","GH","GN","GW","CI","KE","LS","LR","LY","MG","MW","ML","MR","MU"]
+african_country_codes_2            = []
 
 # GEORestriction-Europe — Priority 3
 enable_block_europe   = true
 block_europe_priority = 3
-europe_country_codes  = ["AL","AD","AT","BY","BE","BA","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IS","IE","IT","XK","LV","LI","LT","LU","MT","MD","MC","ME","NL","MK","NO","PL","PT","RO","RU","SM","RS","SK","SI","ES","SE","CH","UA","GB","VA"]
+europe_country_codes  = ["AX","AL","AD","AT","BY","BE","BA","BG","HR","CZ","DK","EE","FO","FI","FR","DE","GI","GR","GG","VA","HU","IS","IM","IT","JE","XK","LV","LI","LT","LU","MT","MD","MC","ME","NL","NO","PL","PT","RO","RU","SM","RS","SK","SI","ES","SJ","SE","CH","UA","GB"]
 
 # GEORestriction-Asia — Priority 4
 enable_block_asia   = true
 block_asia_priority = 4
-asia_country_codes  = ["AF","AM","AZ","BH","BD","BT","BN","KH","CN","GE","IN","ID","IR","IQ","IL","JP","JO","KZ","KW","KG","LA","LB","MY","MV","MN","MM","NP","KP","OM","PK","PS","PH","QA","SA","SG","LK","SY","TW","TJ","TH","TL","TR","TM","AE","UZ","VN","YE"]
+asia_country_codes  = ["AF","AM","AZ","BH","BD","BT","BN","KH","CN","CY","GE","IN","ID","IR","IQ","IL","JP","JO","KZ","KW","KG","LA","LB","MY","MV","MN","MM","NP","KP","OM","PK","PH","QA","SA","SG","KR","LK","SY","TW","TJ","TH","TR","TM","AE","UZ","VN","YE"]
 
 # GEORestriction-Oceania — Priority 5
 enable_block_oceania   = true
 block_oceania_priority = 5
-oceania_country_codes  = ["AU","FJ","KI","MH","FM","NR","NZ","PW","PG","WS","SB","TO","TV","VU"]
+oceania_country_codes  = ["AS","AU","CK","FJ","FM","GU","KI","MH","MP","NC","NF","NZ","NU","PG","PN","PW","SB","TK","TO","TV","VU","WF","WS"]
 
 # =============================================================================
 # Logging
