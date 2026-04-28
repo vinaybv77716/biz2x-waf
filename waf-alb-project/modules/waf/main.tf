@@ -73,14 +73,7 @@ resource "aws_wafv2_web_acl" "this" {
       priority = var.aws_managed_rules_priority
 
       override_action {
-        dynamic "none" {
-          for_each = var.aws_managed_rules_action == "block" ? [1] : []
-          content {}
-        }
-        dynamic "count" {
-          for_each = var.aws_managed_rules_action == "count" ? [1] : []
-          content {}
-        }
+        none {}
       }
 
       statement {
@@ -137,14 +130,7 @@ resource "aws_wafv2_web_acl" "this" {
       priority = var.sql_injection_priority
 
       override_action {
-        dynamic "none" {
-          for_each = var.sql_injection_protection_action == "block" ? [1] : []
-          content {}
-        }
-        dynamic "count" {
-          for_each = var.sql_injection_protection_action == "count" ? [1] : []
-          content {}
-        }
+        none {}
       }
 
       statement {
@@ -199,14 +185,7 @@ resource "aws_wafv2_web_acl" "this" {
       priority = var.known_bad_inputs_priority
 
       override_action {
-        dynamic "none" {
-          for_each = var.known_bad_inputs_action == "block" ? [1] : []
-          content {}
-        }
-        dynamic "count" {
-          for_each = var.known_bad_inputs_action == "count" ? [1] : []
-          content {}
-        }
+        none {}
       }
 
       statement {
@@ -261,14 +240,7 @@ resource "aws_wafv2_web_acl" "this" {
       priority = var.ip_reputation_priority
 
       override_action {
-        dynamic "none" {
-          for_each = var.ip_reputation_action == "block" ? [1] : []
-          content {}
-        }
-        dynamic "count" {
-          for_each = var.ip_reputation_action == "count" ? [1] : []
-          content {}
-        }
+        none {}
       }
 
       statement {
@@ -323,14 +295,7 @@ resource "aws_wafv2_web_acl" "this" {
       priority = var.anonymous_ip_priority
 
       override_action {
-        dynamic "none" {
-          for_each = var.anonymous_ip_action == "block" ? [1] : []
-          content {}
-        }
-        dynamic "count" {
-          for_each = var.anonymous_ip_action == "count" ? [1] : []
-          content {}
-        }
+        none {}
       }
 
       statement {
@@ -356,14 +321,7 @@ resource "aws_wafv2_web_acl" "this" {
       priority = var.bot_control_priority
 
       override_action {
-        dynamic "none" {
-          for_each = var.bot_control_action == "block" ? [1] : []
-          content {}
-        }
-        dynamic "count" {
-          for_each = var.bot_control_action == "count" ? [1] : []
-          content {}
-        }
+        none {}
       }
 
       statement {
@@ -424,14 +382,7 @@ resource "aws_wafv2_web_acl" "this" {
       priority = var.anti_ddos_priority
 
       override_action {
-        dynamic "none" {
-          for_each = var.anti_ddos_action == "block" ? [1] : []
-          content {}
-        }
-        dynamic "count" {
-          for_each = var.anti_ddos_action == "count" ? [1] : []
-          content {}
-        }
+        none {}
       }
 
       statement {
@@ -486,14 +437,7 @@ resource "aws_wafv2_web_acl" "this" {
       priority = var.linux_protection_priority
 
       override_action {
-        dynamic "none" {
-          for_each = var.linux_protection_action == "block" ? [1] : []
-          content {}
-        }
-        dynamic "count" {
-          for_each = var.linux_protection_action == "count" ? [1] : []
-          content {}
-        }
+        none {}
       }
 
       statement {
@@ -548,14 +492,7 @@ resource "aws_wafv2_web_acl" "this" {
       priority = var.unix_protection_priority
 
       override_action {
-        dynamic "none" {
-          for_each = var.unix_protection_action == "block" ? [1] : []
-          content {}
-        }
-        dynamic "count" {
-          for_each = var.unix_protection_action == "count" ? [1] : []
-          content {}
-        }
+        none {}
       }
 
       statement {
@@ -610,14 +547,7 @@ resource "aws_wafv2_web_acl" "this" {
       priority = var.windows_protection_priority
 
       override_action {
-        dynamic "none" {
-          for_each = var.windows_protection_action == "block" ? [1] : []
-          content {}
-        }
-        dynamic "count" {
-          for_each = var.windows_protection_action == "count" ? [1] : []
-          content {}
-        }
+        none {}
       }
 
       statement {
@@ -672,14 +602,7 @@ resource "aws_wafv2_web_acl" "this" {
       priority = var.php_protection_priority
 
       override_action {
-        dynamic "none" {
-          for_each = var.php_protection_action == "block" ? [1] : []
-          content {}
-        }
-        dynamic "count" {
-          for_each = var.php_protection_action == "count" ? [1] : []
-          content {}
-        }
+        none {}
       }
 
       statement {
@@ -734,14 +657,7 @@ resource "aws_wafv2_web_acl" "this" {
       priority = var.wordpress_protection_priority
 
       override_action {
-        dynamic "none" {
-          for_each = var.wordpress_protection_action == "block" ? [1] : []
-          content {}
-        }
-        dynamic "count" {
-          for_each = var.wordpress_protection_action == "count" ? [1] : []
-          content {}
-        }
+        none {}
       }
 
       statement {
