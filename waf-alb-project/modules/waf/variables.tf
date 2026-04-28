@@ -719,6 +719,8 @@ variable "allow_in_us_priority" {
   type    = number
   default = 7
 }
+
+variable "enable_allow_specific_urls" {
   description = "Allow specific URL paths, bypassing other rules"
   type        = bool
   default     = false
