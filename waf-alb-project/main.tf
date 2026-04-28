@@ -55,6 +55,7 @@ module "waf" {
   known_bad_inputs_action                    = var.known_bad_inputs_action
   known_bad_inputs_priority                  = var.known_bad_inputs_priority
   known_bad_inputs_rule_action_overrides     = var.known_bad_inputs_rule_action_overrides
+  known_bad_inputs_version                   = var.known_bad_inputs_version
   enable_ip_reputation                       = var.enable_ip_reputation
   ip_reputation_action                       = var.ip_reputation_action
   ip_reputation_priority                     = var.ip_reputation_priority

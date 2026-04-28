@@ -226,6 +226,12 @@ variable "known_bad_inputs_rule_action_overrides" {
   default = []
 }
 
+variable "known_bad_inputs_version" {
+  description = "Version of AWSManagedRulesKnownBadInputsRuleSet (e.g. Version_1.17). Leave empty for default."
+  type        = string
+  default     = ""
+}
+
 variable "enable_ip_reputation" {
   description = "Enable AWS Managed IP Reputation List"
   type        = bool

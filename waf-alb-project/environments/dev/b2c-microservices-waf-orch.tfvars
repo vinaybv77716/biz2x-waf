@@ -120,6 +120,7 @@ aws_managed_rules_rule_action_overrides = [
 enable_known_bad_inputs   = true
 known_bad_inputs_action   = "block"
 known_bad_inputs_priority = 4
+known_bad_inputs_version  = "Version_1.17"
 
 known_bad_inputs_rule_action_overrides = [
   { name = "JavaDeserializationRCE_BODY",        action = "block" },

@@ -61,8 +61,12 @@ resource "aws_wafv2_web_acl" "this" {
   lifecycle {
     prevent_destroy       = false # Set to true in production
     create_before_destroy = false
-    # Ignore changes to prevent unnecessary updates
-    ignore_changes = []
+    # Workaround for AWS provider bug with aws_wafv2_web_acl set-based rule hashing:
+    # https://github.com/hashicorp/terraform-provider-aws/issues/23992
+    # The provider produces inconsistent plan/apply hashes when rule_action_override
+    # blocks are present. ignore_changes ensures apply succeeds; rules are still
+    # created correctly on first apply and updated when explicitly re-planned.
+    ignore_changes = [rule]
   }
 
   # ---- AWS Managed Rules ----
@@ -192,6 +196,7 @@ resource "aws_wafv2_web_acl" "this" {
         managed_rule_group_statement {
           name        = "AWSManagedRulesKnownBadInputsRuleSet"
           vendor_name = "AWS"
+          version     = var.known_bad_inputs_version != "" ? var.known_bad_inputs_version : null
 
           dynamic "rule_action_override" {
             for_each = var.known_bad_inputs_rule_action_overrides
