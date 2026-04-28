@@ -207,7 +207,7 @@ allow_country_us_priority = 84
 
 enable_allow_in_us        = true
 allow_in_us_priority      = 7
-allow_in_us_country_codes = ["IN", "AF"]
+allow_in_us_country_codes = ["IN", "US"]
 
 enable_allow_specific_urls   = false
 allow_specific_urls_priority = 3
