@@ -91,7 +91,7 @@ anonymous_ip_rule_action_overrides = [
 enable_aws_managed_rules   = true
 aws_managed_rules_action   = "block"
 aws_managed_rules_priority = 3
-aws_managed_rules_version  = "Version_1.20"
+aws_managed_rules_version  = "Version_1.21"
 
 aws_managed_rules_rule_action_overrides = [
   { name = "NoUserAgent_HEADER",                   action = "block" },
@@ -162,7 +162,7 @@ sql_injection_rule_action_overrides = [
   { name = "SQLi_BODY",                        action = "allow" },
   { name = "SQLi_COOKIE",                      action = "block" },
   { name = "SQLiExtendedPatterns_QUERYARGUMENTS", action = "block" },
-  { name = "SQLiExtendedPatterns_BODY",        action = "count" },
+  { name = "SQLiExtendedPatterns_BODY",        action = "allow" },
 ]
 
 # =============================================================================
