@@ -846,8 +846,27 @@ def get_best_rules(plan):
     a = rules_from_state(planned_vals)
     if b or a:
         return b, a
-    a = rules_from_variables(plan)
-    return {}, a
+    # Terraform may report no changes due to `ignore_changes = [rule]` on the
+    # WAF resource.  In that case resource_changes is empty and planned_values
+    # has no rule data.  We still want to surface drift between what is live in
+    # AWS (prior_state) and what the tfvars declare (variables).  Use the live
+    # state as "before" and the variable-derived desired state as "after" so
+    # that plan.py can detect sub-rule overrides that differ from the tfvars.
+    desired = rules_from_variables(plan)
+    live    = rules_from_state(prior_vals)   # may be empty on first deploy
+    if live:
+        # Merge: for each AWS-managed rule present in live state, copy its
+        # subrules into the desired "before" so the diff is accurate.
+        return live, desired
+    return {}, desired
+
+def _terraform_has_no_rule_changes(plan):
+    """Return True when Terraform reported no-op for the WAF ACL (ignore_changes = [rule])."""
+    for ch in plan.get("resource_changes", []):
+        if ch.get("type") == "aws_wafv2_web_acl":
+            return False   # there IS a change tracked by Terraform
+    # No WAF ACL entry in resource_changes → Terraform sees no diff
+    return bool(plan.get("prior_state"))  # only flag when we have live state
 
 def analyze_single(plan_path):
     plan = load(plan_path)
@@ -859,7 +878,17 @@ def analyze_single(plan_path):
         print("\n  WARNING: No WAF rules found in this plan file.\n")
         return
 
-    mode = "DIFF MODE" if before_rules else "PLANNED STATE (no before state)"
+    ignore_changes_active = _terraform_has_no_rule_changes(plan)
+    if ignore_changes_active:
+        print("\n" + "!" * 80)
+        print("  WARNING: ignore_changes = [rule] is active on the WAF resource.")
+        print("  Terraform will NOT apply rule changes via 'terraform apply'.")
+        print("  The diff below compares LIVE AWS state vs. your tfvars (desired config).")
+        print("  Any CHANGED rows indicate drift that Terraform is silently ignoring.")
+        print("!" * 80)
+
+    mode = "DIFF MODE (live state vs tfvars)" if ignore_changes_active else \
+           ("DIFF MODE" if before_rules else "PLANNED STATE (no before state)")
     print("\n  Mode   : {}".format(mode))
     print("  Before : {} rules".format(len(before_rules)))
     print("  After  : {} rules\n".format(len(after_rules)))
