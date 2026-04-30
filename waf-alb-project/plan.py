@@ -48,14 +48,21 @@ WCU_MAP = {
     "block-git-access":                      1,
     "PROD-biz2credit-com-waf-BlockSpecificURL": 1,
     "BlockExtensions-UriPath":               1,
+    "GEORestrictionAfrica":                  1,
     "Block-African-Countries-1":             1,
     "Block-African-Countries-2":             1,
     "Block-SouthAmerica-Countries":          1,
+    "GEORestriction-Europe":                 1,
+    "GEORestriction-Asia":                   1,
+    "GEORestriction-Oceania":                1,
     "PROD-biz2credit-com-WAF-BlockSelectedCountries1": 1,
     "PROD-biz2credit-com-WAF-BlockSelectedCountries2": 1,
     "AllowCountryUS":                        1,
+    "IN-US":                                 1,
     "Allow-URLS":                            1,
+    "keybank-frontend-prod-allowIP":         1,
     "Allow-IPs":                             1,
+    "VPN-AllowIp":                           1,
     "Block-IP":                              1,
 }
 WCU_LIMIT = 1500
@@ -245,12 +252,16 @@ CUSTOM_RULES = [
     ("block_git",                 "block-git-access",                        "block_git_priority"),
     ("block_specific_urls",       "PROD-biz2credit-com-waf-BlockSpecificURL","block_specific_urls_priority"),
     ("block_extensions",          "BlockExtensions-UriPath",                 "block_extensions_priority"),
-    ("block_african_countries",   "Block-African-Countries-1",               "block_african_countries_priority"),
+    ("block_african_countries",   "GEORestrictionAfrica",                    "block_african_countries_priority"),
     ("block_african_countries",   "Block-African-Countries-2",               "block_african_countries_priority_2"),
     ("block_south_america",       "Block-SouthAmerica-Countries",            "block_south_america_priority"),
+    ("block_europe",              "GEORestriction-Europe",                   "block_europe_priority"),
+    ("block_asia",                "GEORestriction-Asia",                     "block_asia_priority"),
+    ("block_oceania",             "GEORestriction-Oceania",                  "block_oceania_priority"),
     ("block_selected_countries_1","PROD-biz2credit-com-WAF-BlockSelectedCountries1","block_selected_countries_1_priority"),
     ("block_selected_countries_2","PROD-biz2credit-com-WAF-BlockSelectedCountries2","block_selected_countries_2_priority"),
     ("allow_country_us",          "AllowCountryUS",                          "allow_country_us_priority"),
+    ("allow_in_us",               "IN-US",                                   "allow_in_us_priority"),
     ("allow_specific_urls",       "Allow-URLS",                              "allow_specific_urls_priority"),
 ]
 
@@ -329,6 +340,28 @@ def rules_from_variables(plan):
         }
 
     # IP Allowlist / Blocklist — always include even if empty, so diffs are detected
+    result["keybank-frontend-prod-allowIP"] = {
+        "priority": vars_.get("allowlist_priority", "N/A"),
+        "effective_action": "allow", "rule_action": "allow",
+        "override_action": None, "subrules": {},
+        "rate_limit": "N/A", "geo_countries": [],
+        "byte_strings": vars_.get("allowlist_ips") or [],
+        "bot_inspect_level": "N/A",
+        "enabled": bool(vars_.get("allowlist_ips") or vars_.get("allowlist_ip_set_arn")),
+        "ip_set_name": vars_.get("allowlist_ip_set_name", ""),
+        "ip_set_arn":  vars_.get("allowlist_ip_set_arn", ""),
+    }
+    result["VPN-AllowIp"] = {
+        "priority": vars_.get("vpn_allowlist_priority", "N/A"),
+        "effective_action": "allow", "rule_action": "allow",
+        "override_action": None, "subrules": {},
+        "rate_limit": "N/A", "geo_countries": [],
+        "byte_strings": vars_.get("vpn_allowlist_ips") or [],
+        "bot_inspect_level": "N/A",
+        "enabled": bool(vars_.get("vpn_allowlist_ips") or vars_.get("vpn_allowlist_ip_set_arn")),
+        "ip_set_name": vars_.get("vpn_allowlist_ip_set_name", ""),
+        "ip_set_arn":  vars_.get("vpn_allowlist_ip_set_arn", ""),
+    }
     result["Allow-IPs"] = {
         "priority": vars_.get("allowlist_priority", "N/A"),
         "effective_action": "allow", "rule_action": "allow",
@@ -361,12 +394,20 @@ def rules_from_variables(plan):
                 geo = vars_.get("african_country_codes_1", [])
         elif "south_america" in enable_key:
             geo = vars_.get("south_america_country_codes", [])
+        elif "block_europe" in enable_key:
+            geo = vars_.get("europe_country_codes", [])
+        elif "block_asia" in enable_key:
+            geo = vars_.get("asia_country_codes", [])
+        elif "block_oceania" in enable_key:
+            geo = vars_.get("oceania_country_codes", [])
         elif "selected_countries_1" in enable_key:
             geo = vars_.get("selected_country_codes_1", [])
         elif "selected_countries_2" in enable_key:
             geo = vars_.get("selected_country_codes_2", [])
         elif "allow_country_us" in enable_key:
             geo = ["NOT US (blocks all non-US)"]
+        elif "allow_in_us" in enable_key:
+            geo = vars_.get("allow_in_us_country_codes", [])
         # byte match rules
         byte_strings = []
         if "block_admin" in enable_key:
@@ -380,10 +421,11 @@ def rules_from_variables(plan):
         elif "allow_specific_urls" in enable_key:
             byte_strings = vars_.get("allowed_urls", [])
 
+        is_allow = "allow_country_us" in enable_key or "allow_in_us" in enable_key or "allow_specific_urls" in enable_key
         result[display_name] = {
             "priority": priority,
-            "effective_action": "block" if "allow_country_us" not in enable_key and "allow" not in enable_key else "allow",
-            "rule_action": "block" if "allow" not in enable_key else "allow",
+            "effective_action": "allow" if is_allow else "block",
+            "rule_action": "allow" if is_allow else "block",
             "override_action": None, "subrules": {},
             "rate_limit": "N/A", "geo_countries": geo,
             "byte_strings": byte_strings, "bot_inspect_level": "N/A",
@@ -526,6 +568,30 @@ def diff_rules(before, after):
                 and b.get("rate_limit") not in (None, "N/A")):
             changes.append(dict(rule=name, sub_rule="---", field="rate_limit",
                                 before_val=b["rate_limit"], after_val=a["rate_limit"], status="CHANGED"))
+        # Geo country diffs
+        b_geo = sorted(b.get("geo_countries", []))
+        a_geo = sorted(a.get("geo_countries", []))
+        if b_geo != a_geo:
+            b_set = set(b_geo)
+            a_set = set(a_geo)
+            for c in sorted(a_set - b_set):
+                changes.append(dict(rule=name, sub_rule="---", field="country_code",
+                                    before_val="---", after_val=c, status="ADDED"))
+            for c in sorted(b_set - a_set):
+                changes.append(dict(rule=name, sub_rule="---", field="country_code",
+                                    before_val=c, after_val="---", status="REMOVED"))
+        # IP / CIDR diffs
+        b_ips = sorted(b.get("byte_strings", []))
+        a_ips = sorted(a.get("byte_strings", []))
+        if b_ips != a_ips:
+            b_set = set(b_ips)
+            a_set = set(a_ips)
+            for ip in sorted(a_set - b_set):
+                changes.append(dict(rule=name, sub_rule="---", field="ip/cidr",
+                                    before_val="---", after_val=ip, status="ADDED"))
+            for ip in sorted(b_set - a_set):
+                changes.append(dict(rule=name, sub_rule="---", field="ip/cidr",
+                                    before_val=ip, after_val="---", status="REMOVED"))
         all_subs = sorted(set(list(b["subrules"].keys()) + list(a["subrules"].keys())))
         for sub in all_subs:
             bv = b["subrules"].get(sub)
@@ -576,7 +642,7 @@ def print_alb_section(albs, waf_arn):
     print(make_table(["ALB ARN", "STATUS"], alb_rows))
 
 def print_rule_overview(before, after):
-    print(section("WAF RULE OVERVIEW  (sorted by priority)"))
+    print(section("WAF RULE OVERVIEW  (enabled rules only, sorted by priority)"))
     all_names = sorted(
         set(list(before.keys()) + list(after.keys())),
         key=lambda n: priority_sort_key(n, before, after)
@@ -585,17 +651,25 @@ def print_rule_overview(before, after):
     for name in all_names:
         b = before.get(name, {})
         a = after.get(name, {})
+        # Skip rules that are disabled in both before and after
+        b_enabled = b.get("enabled", True)
+        a_enabled = a.get("enabled", True)
+        if (b_enabled is False or str(b_enabled).lower() == "false") and \
+           (a_enabled is False or str(a_enabled).lower() == "false"):
+            continue
         prio_b  = str(b.get("priority", "---"))
         prio_a  = str(a.get("priority", "---"))
         act_b   = str(b.get("effective_action", "---"))
         act_a   = str(a.get("effective_action", "---"))
-        enabled = str(a.get("enabled", b.get("enabled", "N/A")))
+        enabled = str(a_enabled)
         n_subs  = len(a.get("subrules", b.get("subrules", {})))
         wcu     = WCU_MAP.get(name, "?")
         if   name not in before:                              status = "ADDED"
         elif name not in after:                               status = "REMOVED"
         elif prio_b != prio_a or act_b != act_a:             status = "CHANGED"
         elif b.get("subrules", {}) != a.get("subrules", {}): status = "SUB-RULES CHANGED"
+        elif b.get("geo_countries", []) != a.get("geo_countries", []): status = "GEO CHANGED"
+        elif b.get("byte_strings", []) != a.get("byte_strings", []):   status = "IPs CHANGED"
         else:                                                 status = "NO CHANGE"
         prio_disp = prio_a if prio_a != "---" else prio_b
         act_disp  = act_a  if act_a  != "---" else act_b
@@ -608,14 +682,19 @@ def print_rule_overview(before, after):
     ))
 
 def print_wcu_summary(after):
-    print(section("WCU BUDGET SUMMARY"))
+    print(section("WCU BUDGET SUMMARY  (enabled rules only)"))
     total = 0
     rows = []
     for name, info in sorted(after.items(), key=lambda x: priority_sort_key(x[0], {}, after)):
         enabled = info.get("enabled", True)
         if enabled is False or str(enabled).lower() == "false":
             continue
+        # Skip duplicate legacy names
+        if name in ("Allow-IPs",) and "keybank-frontend-prod-allowIP" in after:
+            continue
         wcu = WCU_MAP.get(name, 0)
+        if wcu == 0:
+            continue
         total += wcu
         rows.append([name, wcu])
     rows.append(["TOTAL", total])
@@ -623,30 +702,80 @@ def print_wcu_summary(after):
     print(make_table(["RULE", "WCU"], rows))
     print("\n  Hard limit: {}  |  Used: {}{}".format(WCU_LIMIT, total, over))
 
-def print_custom_rules_detail(after):
-    print(section("CUSTOM RULES DETAIL"))
-    custom_names = [r[1] for r in CUSTOM_RULES] + ["Allow-IPs", "Block-IP", "RateLimit"]
-    rows = []
+def print_custom_rules_detail(before, after):
+    print(section("CUSTOM RULES DETAIL  (enabled rules only)"))
+    custom_names = [r[1] for r in CUSTOM_RULES] + [
+        "keybank-frontend-prod-allowIP", "VPN-AllowIp", "Allow-IPs", "Block-IP", "RateLimit"
+    ]
     for name in custom_names:
-        info = after.get(name)
+        b_info = before.get(name, {})
+        a_info = after.get(name, {})
+        info   = a_info or b_info
         if not info:
             continue
-        enabled = info.get("enabled", "N/A")
-        prio    = info.get("priority", "N/A")
-        action  = info.get("effective_action", "N/A")
-        geo     = ", ".join(info.get("geo_countries", [])[:5])
-        if len(info.get("geo_countries", [])) > 5:
-            geo += " ... +{} more".format(len(info["geo_countries"]) - 5)
-        strings = ", ".join(str(s) for s in info.get("byte_strings", [])[:4])
-        if len(info.get("byte_strings", [])) > 4:
-            strings += " ... +{} more".format(len(info["byte_strings"]) - 4)
-        rate    = info.get("rate_limit", "N/A")
-        detail  = geo or strings or (rate if rate != "N/A" else "")
-        rows.append([name, prio, action, str(enabled), detail or "---"])
-    print(make_table(["RULE NAME", "PRIORITY", "ACTION", "ENABLED", "DETAIL"], rows))
+        enabled = info.get("enabled", True)
+        if enabled is False or str(enabled).lower() == "false":
+            continue
+
+        prio   = info.get("priority", "N/A")
+        action = info.get("effective_action", "N/A")
+        rate   = info.get("rate_limit", "N/A")
+
+        print(subsection("{} [priority={}  action={}]".format(name, prio, action)))
+
+        # Rate limit
+        if rate and rate != "N/A":
+            b_rate = b_info.get("rate_limit", "N/A")
+            a_rate = a_info.get("rate_limit", "N/A")
+            status = "CHANGED" if b_rate != a_rate and b_rate != "N/A" else "NO CHANGE"
+            print(make_table(["FIELD", "BEFORE", "AFTER", "STATUS"],
+                             [["rate_limit", b_rate, a_rate, status]]))
+
+        # IP set info
+        ip_set_name = info.get("ip_set_name", "")
+        ip_set_arn  = info.get("ip_set_arn", "")
+        if ip_set_name or ip_set_arn:
+            print("\n  IP Set Name : {}".format(ip_set_name or "(auto-generated)"))
+            if ip_set_arn:
+                print("  IP Set ARN  : {}".format(ip_set_arn))
+
+        # Geo countries diff
+        b_geo = b_info.get("geo_countries", [])
+        a_geo = a_info.get("geo_countries", [])
+        if a_geo or b_geo:
+            b_set = set(b_geo)
+            a_set = set(a_geo)
+            added   = sorted(a_set - b_set)
+            removed = sorted(b_set - a_set)
+            kept    = sorted(b_set & a_set)
+            rows = []
+            for c in added:   rows.append([c, "---", c,   "ADDED"])
+            for c in removed: rows.append([c, c,   "---", "REMOVED"])
+            for c in kept:    rows.append([c, c,   c,     "NO CHANGE"])
+            rows.sort(key=lambda r: (r[3] != "ADDED", r[3] != "REMOVED", r[0]))
+            print("\n  Country Codes ({} total):".format(len(a_geo) or len(b_geo)))
+            print(make_table(["COUNTRY CODE", "BEFORE", "AFTER", "STATUS"], rows))
+
+        # IP / byte-string diff
+        b_ips = b_info.get("byte_strings", [])
+        a_ips = a_info.get("byte_strings", [])
+        if a_ips or b_ips:
+            b_set = set(b_ips)
+            a_set = set(a_ips)
+            added   = sorted(a_set - b_set)
+            removed = sorted(b_set - a_set)
+            kept    = sorted(b_set & a_set)
+            rows = []
+            for ip in added:   rows.append([ip, "---", ip,  "ADDED"])
+            for ip in removed: rows.append([ip, ip,  "---", "REMOVED"])
+            for ip in kept:    rows.append([ip, ip,  ip,    "NO CHANGE"])
+            rows.sort(key=lambda r: (r[3] != "ADDED", r[3] != "REMOVED", r[0]))
+            label = "IPs / CIDRs" if any("/" in str(x) for x in a_ips + b_ips) else "Paths / Strings"
+            print("\n  {} ({} total):".format(label, len(a_ips) or len(b_ips)))
+            print(make_table([label, "BEFORE", "AFTER", "STATUS"], rows))
 
 def print_subrules_full(before, after):
-    print(section("AWS MANAGED RULE SUB-RULES  (complete breakdown)"))
+    print(section("AWS MANAGED RULE SUB-RULES  (enabled rules only)"))
     all_names = sorted(
         set(list(before.keys()) + list(after.keys())),
         key=lambda n: priority_sort_key(n, before, after)
@@ -657,6 +786,12 @@ def print_subrules_full(before, after):
         b_subs = b.get("subrules", {})
         a_subs = a.get("subrules", {})
         if not b_subs and not a_subs:
+            continue
+        # Skip disabled rules
+        b_enabled = b.get("enabled", True)
+        a_enabled = a.get("enabled", True)
+        if (b_enabled is False or str(b_enabled).lower() == "false") and \
+           (a_enabled is False or str(a_enabled).lower() == "false"):
             continue
         prio = a.get("priority", b.get("priority", "?"))
         bot_level = a.get("bot_inspect_level", "N/A")
@@ -736,7 +871,7 @@ def analyze_single(plan_path):
     print_ip_set_changes(extract_ip_set_changes(plan))
     print_rule_overview(before_rules, after_rules)
     print_wcu_summary(after_rules)
-    print_custom_rules_detail(after_rules)
+    print_custom_rules_detail(before_rules, after_rules)
     print_subrules_full(before_rules, after_rules)
 
     changes = diff_rules(before_rules, after_rules)
@@ -786,7 +921,7 @@ def analyze_two(before_path, after_path):
     print_ip_set_changes(extract_ip_set_changes(after_plan))
     print_rule_overview(before_rules, after_rules)
     print_wcu_summary(after_rules)
-    print_custom_rules_detail(after_rules)
+    print_custom_rules_detail(before_rules, after_rules)
     print_subrules_full(before_rules, after_rules)
     changes = diff_rules(before_rules, after_rules)
     print_diff_summary(changes)
