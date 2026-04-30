@@ -277,7 +277,16 @@ def rules_from_variables(plan):
         aws_name = VAR_PREFIX_TO_AWS.get(prefix, prefix)
         priority = vars_.get("{}_priority".format(prefix), "N/A")
         action   = vars_.get("{}_action".format(prefix), "N/A")
-        enabled  = vars_.get("enable_{}".format(prefix), "N/A")
+        # AWS managed rule groups always use override_action { none {} } in the
+        # live state, so normalise to "none" here to avoid false CHANGED diffs
+        # in the rule overview when comparing live state vs desired variables.
+        effective = "none"
+        # Resolve the enable flag — variable names are not always consistent
+        # (e.g. enable_sql_injection_protection vs enable_sql_injection), so
+        # try both forms.
+        enabled = vars_.get("enable_{}".format(prefix),
+                  vars_.get("enable_{}_protection".format(prefix),
+                  vars_.get("enable_{}_rules".format(prefix), "N/A")))
         overrides = val or []
         subrules = {ov["name"]: ov["action"] for ov in overrides
                     if "name" in ov and "action" in ov}
@@ -285,8 +294,8 @@ def rules_from_variables(plan):
         if prefix == "bot_control":
             extra["bot_inspect_level"] = vars_.get("bot_control_inspection_level", "N/A")
         result[aws_name] = {
-            "priority": priority, "effective_action": action,
-            "rule_action": None, "override_action": action,
+            "priority": priority, "effective_action": effective,
+            "rule_action": None, "override_action": effective,
             "subrules": subrules, "rate_limit": "N/A",
             "geo_countries": [], "byte_strings": [],
             "bot_inspect_level": extra.get("bot_inspect_level", "N/A"),
@@ -297,8 +306,8 @@ def rules_from_variables(plan):
     if "anonymous_ip_priority" in vars_:
         result["AWSManagedRulesAnonymousIpList"] = {
             "priority": vars_.get("anonymous_ip_priority", "N/A"),
-            "effective_action": vars_.get("anonymous_ip_action", "N/A"),
-            "rule_action": None, "override_action": vars_.get("anonymous_ip_action", "N/A"),
+            "effective_action": "none",
+            "rule_action": None, "override_action": "none",
             "subrules": {}, "rate_limit": "N/A",
             "geo_countries": [], "byte_strings": [], "bot_inspect_level": "N/A",
             "enabled": vars_.get("enable_anonymous_ip", "N/A"),
@@ -308,8 +317,8 @@ def rules_from_variables(plan):
     if "bot_control_priority" in vars_ and "AWSManagedRulesBotControlRuleSet" not in result:
         result["AWSManagedRulesBotControlRuleSet"] = {
             "priority": vars_.get("bot_control_priority", "N/A"),
-            "effective_action": vars_.get("bot_control_action", "N/A"),
-            "rule_action": None, "override_action": vars_.get("bot_control_action", "N/A"),
+            "effective_action": "none",
+            "rule_action": None, "override_action": "none",
             "subrules": {}, "rate_limit": "N/A",
             "geo_countries": [], "byte_strings": [],
             "bot_inspect_level": vars_.get("bot_control_inspection_level", "N/A"),
@@ -320,8 +329,8 @@ def rules_from_variables(plan):
     if "anti_ddos_priority" in vars_:
         result["AWSManagedRulesAntiDDoSRuleSet"] = {
             "priority": vars_.get("anti_ddos_priority", "N/A"),
-            "effective_action": vars_.get("anti_ddos_action", "N/A"),
-            "rule_action": None, "override_action": vars_.get("anti_ddos_action", "N/A"),
+            "effective_action": "none",
+            "rule_action": None, "override_action": "none",
             "subrules": {}, "rate_limit": "N/A",
             "geo_countries": [], "byte_strings": [], "bot_inspect_level": "N/A",
             "enabled": vars_.get("enable_anti_ddos", "N/A"),
@@ -836,28 +845,38 @@ def load(path):
     with open(path) as f:
         return json.load(f)
 
+def _waf_acl_in_resource_changes(plan):
+    """Return True when Terraform is tracking an actual change to the WAF ACL."""
+    for ch in plan.get("resource_changes", []):
+        if ch.get("type") == "aws_wafv2_web_acl":
+            actions = ch.get("change", {}).get("actions", [])
+            if actions and actions != ["no-op"]:
+                return True
+    return False
+
 def get_best_rules(plan):
-    b, a = rules_from_changes(plan)
-    if b or a:
-        return b, a
-    prior_vals   = plan.get("prior_state",    {}).get("values", {})
-    planned_vals = plan.get("planned_values", {})
-    b = rules_from_state(prior_vals)
-    a = rules_from_state(planned_vals)
-    if b or a:
-        return b, a
-    # Terraform may report no changes due to `ignore_changes = [rule]` on the
-    # WAF resource.  In that case resource_changes is empty and planned_values
-    # has no rule data.  We still want to surface drift between what is live in
-    # AWS (prior_state) and what the tfvars declare (variables).  Use the live
-    # state as "before" and the variable-derived desired state as "after" so
-    # that plan.py can detect sub-rule overrides that differ from the tfvars.
-    desired = rules_from_variables(plan)
-    live    = rules_from_state(prior_vals)   # may be empty on first deploy
+    # Case 1: Terraform is tracking a real WAF ACL change — use resource_changes.
+    if _waf_acl_in_resource_changes(plan):
+        b, a = rules_from_changes(plan)
+        if b or a:
+            return b, a
+
+    # Case 2: No real change tracked (common when ignore_changes = [rule] is set).
+    # Use live AWS state (prior_state) as "before" and tfvars-derived desired
+    # config as "after" so plan.py can surface drift that Terraform is ignoring.
+    prior_vals = plan.get("prior_state", {}).get("values", {})
+    live       = rules_from_state(prior_vals)
+    desired    = rules_from_variables(plan)
+
     if live:
-        # Merge: for each AWS-managed rule present in live state, copy its
-        # subrules into the desired "before" so the diff is accurate.
         return live, desired
+
+    # Case 3: No prior state at all (first deploy) — fall back to planned_values.
+    planned_vals = plan.get("planned_values", {})
+    a = rules_from_state(planned_vals)
+    if a:
+        return {}, a
+
     return {}, desired
 
 def _terraform_has_no_rule_changes(plan):
