@@ -68,13 +68,13 @@ resource "aws_wafv2_web_acl" "this" {
     }
   }
 
-  # ignore_changes = [rule] is required to avoid AWS provider bug:
-  # https://github.com/hashicorp/terraform-provider-aws/issues/23992
-  # The IN-US geo rule is updated separately via null_resource.update_in_us_rule below.
+  # The AWS provider bug that required ignore_changes = [rule] was fixed in
+  # provider v5.x (https://github.com/hashicorp/terraform-provider-aws/issues/23992).
+  # This project uses v5.100.0 so the workaround is no longer needed.
+  # Rule changes are now managed directly by Terraform via terraform plan/apply.
   lifecycle {
     prevent_destroy       = false
     create_before_destroy = false
-    ignore_changes        = [rule]
   }
 
   # ---- AWS Managed Rules ----
