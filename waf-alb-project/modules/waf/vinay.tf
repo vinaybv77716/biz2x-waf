@@ -15,25 +15,14 @@ locals {
 # IP Sets (optional - used in rules)
 # -----------------------------------------------------------------------------
 resource "aws_wafv2_ip_set" "allowlist" {
-  count              = var.create_waf && length(var.allowlist_ips) > 0 && var.allowlist_ip_set_arn == "" ? 1 : 0
-  name               = var.allowlist_ip_set_name != "" ? var.allowlist_ip_set_name : "${local.name_prefix}-allowlist"
+  count              = var.create_waf && length(var.allowlist_ips) > 0 ? 1 : 0
+  name               = "${local.name_prefix}-allowlist"
   description        = "Allowlisted IPs for ${local.name_prefix}"
   scope              = "REGIONAL"
   ip_address_version = "IPV4"
   addresses          = var.allowlist_ips
 
-  tags = merge(var.tags, { Name = var.allowlist_ip_set_name != "" ? var.allowlist_ip_set_name : "${local.name_prefix}-allowlist" })
-}
-
-resource "aws_wafv2_ip_set" "vpn_allowlist" {
-  count              = var.create_waf && length(var.vpn_allowlist_ips) > 0 && var.vpn_allowlist_ip_set_arn == "" ? 1 : 0
-  name               = var.vpn_allowlist_ip_set_name != "" ? var.vpn_allowlist_ip_set_name : "${local.name_prefix}-vpn-allowlist"
-  description        = "VPN Allowlisted IPs for ${local.name_prefix}"
-  scope              = "REGIONAL"
-  ip_address_version = "IPV4"
-  addresses          = var.vpn_allowlist_ips
-
-  tags = merge(var.tags, { Name = var.vpn_allowlist_ip_set_name != "" ? var.vpn_allowlist_ip_set_name : "${local.name_prefix}-vpn-allowlist" })
+  tags = merge(var.tags, { Name = "${local.name_prefix}-allowlist" })
 }
 
 resource "aws_wafv2_ip_set" "blocklist" {
@@ -68,10 +57,12 @@ resource "aws_wafv2_web_acl" "this" {
     }
   }
 
+  # Prevent Terraform from destroying this unless explicitly intended
   lifecycle {
-    prevent_destroy       = false
+    prevent_destroy       = false # Set to true in production
     create_before_destroy = false
-    ignore_changes        = []
+    # Ignore changes to prevent unnecessary updates
+    ignore_changes = []
   }
 
   # ---- AWS Managed Rules ----
@@ -96,8 +87,8 @@ resource "aws_wafv2_web_acl" "this" {
         managed_rule_group_statement {
           name        = "AWSManagedRulesCommonRuleSet"
           vendor_name = "AWS"
-          version     = var.aws_managed_rules_version != "" ? var.aws_managed_rules_version : null
 
+          # Per-sub-rule action overrides (e.g. force a specific sub-rule to count)
           dynamic "rule_action_override" {
             for_each = var.aws_managed_rules_rule_action_overrides
             content {
@@ -113,14 +104,6 @@ resource "aws_wafv2_web_acl" "this" {
                 }
                 dynamic "count" {
                   for_each = rule_action_override.value.action == "count" ? [1] : []
-                  content {}
-                }
-                dynamic "captcha" {
-                  for_each = rule_action_override.value.action == "captcha" ? [1] : []
-                  content {}
-                }
-                dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
                   content {}
                 }
               }
@@ -159,7 +142,6 @@ resource "aws_wafv2_web_acl" "this" {
         managed_rule_group_statement {
           name        = "AWSManagedRulesSQLiRuleSet"
           vendor_name = "AWS"
-          version     = var.sql_injection_version != "" ? var.sql_injection_version : null
 
           dynamic "rule_action_override" {
             for_each = var.sql_injection_rule_action_overrides
@@ -176,14 +158,6 @@ resource "aws_wafv2_web_acl" "this" {
                 }
                 dynamic "count" {
                   for_each = rule_action_override.value.action == "count" ? [1] : []
-                  content {}
-                }
-                dynamic "captcha" {
-                  for_each = rule_action_override.value.action == "captcha" ? [1] : []
-                  content {}
-                }
-                dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
                   content {}
                 }
               }
@@ -222,7 +196,6 @@ resource "aws_wafv2_web_acl" "this" {
         managed_rule_group_statement {
           name        = "AWSManagedRulesKnownBadInputsRuleSet"
           vendor_name = "AWS"
-          version     = var.known_bad_inputs_version != "" ? var.known_bad_inputs_version : null
 
           dynamic "rule_action_override" {
             for_each = var.known_bad_inputs_rule_action_overrides
@@ -239,14 +212,6 @@ resource "aws_wafv2_web_acl" "this" {
                 }
                 dynamic "count" {
                   for_each = rule_action_override.value.action == "count" ? [1] : []
-                  content {}
-                }
-                dynamic "captcha" {
-                  for_each = rule_action_override.value.action == "captcha" ? [1] : []
-                  content {}
-                }
-                dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
                   content {}
                 }
               }
@@ -301,14 +266,6 @@ resource "aws_wafv2_web_acl" "this" {
                 }
                 dynamic "count" {
                   for_each = rule_action_override.value.action == "count" ? [1] : []
-                  content {}
-                }
-                dynamic "captcha" {
-                  for_each = rule_action_override.value.action == "captcha" ? [1] : []
-                  content {}
-                }
-                dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
                   content {}
                 }
               }
@@ -380,7 +337,6 @@ resource "aws_wafv2_web_acl" "this" {
         managed_rule_group_statement {
           name        = "AWSManagedRulesBotControlRuleSet"
           vendor_name = "AWS"
-          version     = var.bot_control_version != "" ? var.bot_control_version : null
 
           managed_rule_group_configs {
             aws_managed_rules_bot_control_rule_set {
@@ -403,14 +359,6 @@ resource "aws_wafv2_web_acl" "this" {
                 }
                 dynamic "count" {
                   for_each = rule_action_override.value.action == "count" ? [1] : []
-                  content {}
-                }
-                dynamic "captcha" {
-                  for_each = rule_action_override.value.action == "captcha" ? [1] : []
-                  content {}
-                }
-                dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
                   content {}
                 }
               }
@@ -467,14 +415,6 @@ resource "aws_wafv2_web_acl" "this" {
                   for_each = rule_action_override.value.action == "count" ? [1] : []
                   content {}
                 }
-                dynamic "captcha" {
-                  for_each = rule_action_override.value.action == "captcha" ? [1] : []
-                  content {}
-                }
-                dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
-                  content {}
-                }
               }
             }
           }
@@ -511,7 +451,6 @@ resource "aws_wafv2_web_acl" "this" {
         managed_rule_group_statement {
           name        = "AWSManagedRulesLinuxRuleSet"
           vendor_name = "AWS"
-          version     = var.linux_protection_version != "" ? var.linux_protection_version : null
 
           dynamic "rule_action_override" {
             for_each = var.linux_protection_rule_action_overrides
@@ -528,14 +467,6 @@ resource "aws_wafv2_web_acl" "this" {
                 }
                 dynamic "count" {
                   for_each = rule_action_override.value.action == "count" ? [1] : []
-                  content {}
-                }
-                dynamic "captcha" {
-                  for_each = rule_action_override.value.action == "captcha" ? [1] : []
-                  content {}
-                }
-                dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
                   content {}
                 }
               }
@@ -592,14 +523,6 @@ resource "aws_wafv2_web_acl" "this" {
                   for_each = rule_action_override.value.action == "count" ? [1] : []
                   content {}
                 }
-                dynamic "captcha" {
-                  for_each = rule_action_override.value.action == "captcha" ? [1] : []
-                  content {}
-                }
-                dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
-                  content {}
-                }
               }
             }
           }
@@ -652,14 +575,6 @@ resource "aws_wafv2_web_acl" "this" {
                 }
                 dynamic "count" {
                   for_each = rule_action_override.value.action == "count" ? [1] : []
-                  content {}
-                }
-                dynamic "captcha" {
-                  for_each = rule_action_override.value.action == "captcha" ? [1] : []
-                  content {}
-                }
-                dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
                   content {}
                 }
               }
@@ -716,14 +631,6 @@ resource "aws_wafv2_web_acl" "this" {
                   for_each = rule_action_override.value.action == "count" ? [1] : []
                   content {}
                 }
-                dynamic "captcha" {
-                  for_each = rule_action_override.value.action == "captcha" ? [1] : []
-                  content {}
-                }
-                dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
-                  content {}
-                }
               }
             }
           }
@@ -778,14 +685,6 @@ resource "aws_wafv2_web_acl" "this" {
                   for_each = rule_action_override.value.action == "count" ? [1] : []
                   content {}
                 }
-                dynamic "captcha" {
-                  for_each = rule_action_override.value.action == "captcha" ? [1] : []
-                  content {}
-                }
-                dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
-                  content {}
-                }
               }
             }
           }
@@ -825,11 +724,11 @@ resource "aws_wafv2_web_acl" "this" {
     }
   }
 
-  # ---- IP Allowlist Rule (keybank-frontend-prod-allowIP) ----
+  # ---- IP Allowlist Rule ----
   dynamic "rule" {
-    for_each = var.create_waf && (length(var.allowlist_ips) > 0 || var.allowlist_ip_set_arn != "") ? [1] : []
+    for_each = var.create_waf && length(var.allowlist_ips) > 0 ? [1] : []
     content {
-      name     = "keybank-frontend-prod-allowIP"
+      name     = "Allow-IPs"
       priority = var.allowlist_priority
 
       action {
@@ -838,38 +737,13 @@ resource "aws_wafv2_web_acl" "this" {
 
       statement {
         ip_set_reference_statement {
-          arn = var.allowlist_ip_set_arn != "" ? var.allowlist_ip_set_arn : aws_wafv2_ip_set.allowlist[0].arn
+          arn = aws_wafv2_ip_set.allowlist[0].arn
         }
       }
 
       visibility_config {
         cloudwatch_metrics_enabled = true
-        metric_name                = "keybank-frontend-prod-allowIP"
-        sampled_requests_enabled   = true
-      }
-    }
-  }
-
-  # ---- VPN IP Allowlist Rule ----
-  dynamic "rule" {
-    for_each = var.create_waf && (length(var.vpn_allowlist_ips) > 0 || var.vpn_allowlist_ip_set_arn != "") ? [1] : []
-    content {
-      name     = "VPN-AllowIp"
-      priority = var.vpn_allowlist_priority
-
-      action {
-        allow {}
-      }
-
-      statement {
-        ip_set_reference_statement {
-          arn = var.vpn_allowlist_ip_set_arn != "" ? var.vpn_allowlist_ip_set_arn : aws_wafv2_ip_set.vpn_allowlist[0].arn
-        }
-      }
-
-      visibility_config {
-        cloudwatch_metrics_enabled = true
-        metric_name                = "VPN-AllowIp"
+        metric_name                = "Allow-IPs"
         sampled_requests_enabled   = true
       }
     }
@@ -1103,81 +977,6 @@ resource "aws_wafv2_web_acl" "this" {
     }
   }
 
-  # ---- GEORestriction-Europe ----
-  dynamic "rule" {
-    for_each = var.enable_block_europe && length(var.europe_country_codes) > 0 ? [1] : []
-    content {
-      name     = "GEORestriction-Europe"
-      priority = var.block_europe_priority
-
-      action {
-        block {}
-      }
-
-      statement {
-        geo_match_statement {
-          country_codes = var.europe_country_codes
-        }
-      }
-
-      visibility_config {
-        cloudwatch_metrics_enabled = true
-        metric_name                = "GEORestriction-Europe"
-        sampled_requests_enabled   = true
-      }
-    }
-  }
-
-  # ---- GEORestriction-Asia ----
-  dynamic "rule" {
-    for_each = var.enable_block_asia && length(var.asia_country_codes) > 0 ? [1] : []
-    content {
-      name     = "GEORestriction-Asia"
-      priority = var.block_asia_priority
-
-      action {
-        block {}
-      }
-
-      statement {
-        geo_match_statement {
-          country_codes = var.asia_country_codes
-        }
-      }
-
-      visibility_config {
-        cloudwatch_metrics_enabled = true
-        metric_name                = "GEORestriction-Asia"
-        sampled_requests_enabled   = true
-      }
-    }
-  }
-
-  # ---- GEORestriction-Oceania ----
-  dynamic "rule" {
-    for_each = var.enable_block_oceania && length(var.oceania_country_codes) > 0 ? [1] : []
-    content {
-      name     = "GEORestriction-Oceania"
-      priority = var.block_oceania_priority
-
-      action {
-        block {}
-      }
-
-      statement {
-        geo_match_statement {
-          country_codes = var.oceania_country_codes
-        }
-      }
-
-      visibility_config {
-        cloudwatch_metrics_enabled = true
-        metric_name                = "GEORestriction-Oceania"
-        sampled_requests_enabled   = true
-      }
-    }
-  }
-
   # ---- Block Selected Countries Group 1 ----
   dynamic "rule" {
     for_each = var.enable_block_selected_countries_1 && length(var.selected_country_codes_1) > 0 ? [1] : []
@@ -1252,31 +1051,6 @@ resource "aws_wafv2_web_acl" "this" {
       visibility_config {
         cloudwatch_metrics_enabled = true
         metric_name                = "AllowCountryUS"
-        sampled_requests_enabled   = true
-      }
-    }
-  }
-
-  # ---- Allow IN-US (allow traffic from India and United States) ----
-  dynamic "rule" {
-    for_each = var.enable_allow_in_us ? [1] : []
-    content {
-      name     = "IN-US"
-      priority = var.allow_in_us_priority
-
-      action {
-        allow {}
-      }
-
-      statement {
-        geo_match_statement {
-          country_codes = var.allow_in_us_country_codes
-        }
-      }
-
-      visibility_config {
-        cloudwatch_metrics_enabled = true
-        metric_name                = "IN-US"
         sampled_requests_enabled   = true
       }
     }
@@ -1378,11 +1152,19 @@ resource "aws_wafv2_web_acl_logging_configuration" "this" {
 # Manages associations independently of WAF creation
 # -----------------------------------------------------------------------------
 resource "aws_wafv2_web_acl_association" "this" {
+  # Create associations when:
+  # 1. associate_waf is true
+  # 2. We have ALB ARNs to associate
+  # 3. We have a valid WAF ARN (either from creation or existing)
   for_each = var.associate_waf && length(var.alb_arns) > 0 ? toset(var.alb_arns) : toset([])
 
   resource_arn = each.value
-  web_acl_arn  = local.web_acl_arn
+  # Use the determined WAF ARN from locals
+  web_acl_arn = local.web_acl_arn
 
+  # Depend on WAF resource if we're creating it
+  # Note: depends_on must be a static list, so we include it always
+  # but it only matters when create_waf=true
   depends_on = [aws_wafv2_web_acl.this]
 }
 
