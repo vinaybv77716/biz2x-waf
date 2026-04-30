@@ -162,7 +162,7 @@ sql_injection_rule_action_overrides = [
   { name = "SQLi_BODY",                        action = "allow" },
   { name = "SQLi_COOKIE",                      action = "block" },
   { name = "SQLiExtendedPatterns_QUERYARGUMENTS", action = "block" },
-  { name = "SQLiExtendedPatterns_BODY",        action = "allow" },
+  { name = "SQLiExtendedPatterns_BODY",        action = "block" },
 ]
 
 # =============================================================================
