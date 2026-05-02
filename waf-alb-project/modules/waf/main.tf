@@ -119,9 +119,6 @@ resource "aws_wafv2_web_acl" "this" {
                   for_each = rule_action_override.value.action == "captcha" ? [1] : []
                   content {}
                 }
-                dynamic "challenge" {
-                
-              }
             }
           }
         }
@@ -180,9 +177,6 @@ resource "aws_wafv2_web_acl" "this" {
                   for_each = rule_action_override.value.action == "captcha" ? [1] : []
                   content {}
                 }
-                dynamic "challenge" {
-                
-              }
             }
           }
         }
@@ -241,9 +235,6 @@ resource "aws_wafv2_web_acl" "this" {
                   for_each = rule_action_override.value.action == "captcha" ? [1] : []
                   content {}
                 }
-                dynamic "challenge" {
-                
-              }
             }
           }
         }
@@ -301,9 +292,6 @@ resource "aws_wafv2_web_acl" "this" {
                   for_each = rule_action_override.value.action == "captcha" ? [1] : []
                   content {}
                 }
-                dynamic "challenge" {
-                
-              }
             }
           }
         }
@@ -401,9 +389,6 @@ resource "aws_wafv2_web_acl" "this" {
                   for_each = rule_action_override.value.action == "captcha" ? [1] : []
                   content {}
                 }
-                dynamic "challenge" {
-                
-              }
             }
           }
         }
@@ -461,9 +446,6 @@ resource "aws_wafv2_web_acl" "this" {
                   for_each = rule_action_override.value.action == "captcha" ? [1] : []
                   content {}
                 }
-                dynamic "challenge" {
-                
-              }
             }
           }
         }
@@ -522,9 +504,6 @@ resource "aws_wafv2_web_acl" "this" {
                   for_each = rule_action_override.value.action == "captcha" ? [1] : []
                   content {}
                 }
-                dynamic "challenge" {
-                
-              }
             }
           }
         }
@@ -582,9 +561,6 @@ resource "aws_wafv2_web_acl" "this" {
                   for_each = rule_action_override.value.action == "captcha" ? [1] : []
                   content {}
                 }
-                dynamic "challenge" {
-                
-              }
             }
           }
         }
@@ -642,9 +618,6 @@ resource "aws_wafv2_web_acl" "this" {
                   for_each = rule_action_override.value.action == "captcha" ? [1] : []
                   content {}
                 }
-                dynamic "challenge" {
-                
-              }
             }
           }
         }
@@ -702,9 +675,6 @@ resource "aws_wafv2_web_acl" "this" {
                   for_each = rule_action_override.value.action == "captcha" ? [1] : []
                   content {}
                 }
-                dynamic "challenge" {
-                
-              }
             }
           }
         }
@@ -762,9 +732,6 @@ resource "aws_wafv2_web_acl" "this" {
                   for_each = rule_action_override.value.action == "captcha" ? [1] : []
                   content {}
                 }
-                dynamic "challenge" {
-                
-              }
             }
           }
         }
