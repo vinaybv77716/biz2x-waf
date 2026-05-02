@@ -120,9 +120,7 @@ resource "aws_wafv2_web_acl" "this" {
                   content {}
                 }
                 dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
-                  content {}
-                }
+                
               }
             }
           }
@@ -183,9 +181,7 @@ resource "aws_wafv2_web_acl" "this" {
                   content {}
                 }
                 dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
-                  content {}
-                }
+                
               }
             }
           }
@@ -246,9 +242,7 @@ resource "aws_wafv2_web_acl" "this" {
                   content {}
                 }
                 dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
-                  content {}
-                }
+                
               }
             }
           }
@@ -308,9 +302,7 @@ resource "aws_wafv2_web_acl" "this" {
                   content {}
                 }
                 dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
-                  content {}
-                }
+                
               }
             }
           }
@@ -410,9 +402,7 @@ resource "aws_wafv2_web_acl" "this" {
                   content {}
                 }
                 dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
-                  content {}
-                }
+                
               }
             }
           }
@@ -472,9 +462,7 @@ resource "aws_wafv2_web_acl" "this" {
                   content {}
                 }
                 dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
-                  content {}
-                }
+                
               }
             }
           }
@@ -535,9 +523,7 @@ resource "aws_wafv2_web_acl" "this" {
                   content {}
                 }
                 dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
-                  content {}
-                }
+                
               }
             }
           }
@@ -597,9 +583,7 @@ resource "aws_wafv2_web_acl" "this" {
                   content {}
                 }
                 dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
-                  content {}
-                }
+                
               }
             }
           }
@@ -659,9 +643,7 @@ resource "aws_wafv2_web_acl" "this" {
                   content {}
                 }
                 dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
-                  content {}
-                }
+                
               }
             }
           }
@@ -721,9 +703,7 @@ resource "aws_wafv2_web_acl" "this" {
                   content {}
                 }
                 dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
-                  content {}
-                }
+                
               }
             }
           }
@@ -783,9 +763,7 @@ resource "aws_wafv2_web_acl" "this" {
                   content {}
                 }
                 dynamic "challenge" {
-                  for_each = rule_action_override.value.action == "challenge" ? [1] : []
-                  content {}
-                }
+                
               }
             }
           }
@@ -1394,3 +1372,4 @@ resource "null_resource" "validate_web_acl_arn" {
     command = "echo 'ERROR: existing_web_acl_arn must be provided when create_waf=false and associate_waf=true' && exit 1"
   }
 }
+
