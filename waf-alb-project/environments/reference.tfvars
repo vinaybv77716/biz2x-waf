@@ -83,7 +83,7 @@ bot_control_rule_action_overrides = [
   { name = "SignalKnownBotDataCenter",  action = "block" },
   { name = "SignalNonBrowserUserAgent", action = "allow" },  # allow for mobile/API
   # --- Targeted inspection level rules (only when inspection_level = TARGETED) ---
-  { name = "TGT_VolumetricIpTokenAbsent",      action = "challenge" },
+  { name = "TGT_VolumetricIpTokenAbsent",      action = "count" },
   { name = "TGT_VolumetricSession",            action = "captcha" },
   { name = "TGT_SignalAutomatedBrowser",       action = "captcha" },
   { name = "TGT_SignalBrowserInconsistency",   action = "captcha" },
