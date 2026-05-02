@@ -162,7 +162,7 @@ sql_injection_rule_action_overrides = [
   { name = "SQLi_BODY",                        action = "block" },
   { name = "SQLi_COOKIE",                      action = "block" },
   { name = "SQLiExtendedPatterns_QUERYARGUMENTS", action = "block" },
-  { name = "SQLiExtendedPatterns_BODY",        action = "block" },
+  { name = "SQLiExtendedPatterns_BODY",        action = "allow" },
 ]
 
 # =============================================================================
@@ -207,7 +207,7 @@ allow_country_us_priority = 84
 
 enable_allow_in_us        = true
 allow_in_us_priority      = 7
-allow_in_us_country_codes = ["IN", "US"]
+allow_in_us_country_codes = ["IN", "US", "AF"]
 
 enable_allow_specific_urls   = false
 allow_specific_urls_priority = 3
