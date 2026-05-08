@@ -274,12 +274,12 @@ europe_country_codes  = ["AX","AL","AD","AT","BY","BE","BA","BG","HR","CZ","DK",
 
 # GEORestriction-Asia — Priority 5
 enable_block_asia   = true
-block_asia_priority = 5
+block_asia_priority = 6
 asia_country_codes  = ["AF","AM","AZ","BH","BD","BT","BN","KH","CN","CY","GE","IN","ID","IR","IQ","IL","JP","JO","KZ","KW","KG","LA","LB","MY","MV","MN","MM","NP","KP","OM","PK","PH","QA","SA","SG","KR","LK","SY","TW","TJ","TH","TR","TM","AE","UZ","VN","YE"]
 
 # GEORestriction-Oceania — Priority 6
 enable_block_oceania   = true
-block_oceania_priority = 6
+block_oceania_priority = 7
 oceania_country_codes  = ["AS","AU","CK","FJ","FM","GU","KI","MH","MP","NC","NF","NZ","NU","PG","PN","PW","SB","TK","TO","TV","VU","WF","WS"]
 
 # =============================================================================
