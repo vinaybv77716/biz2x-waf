@@ -2,16 +2,13 @@
 # ROOT MODULE — WAF + ALB Management
 # =============================================================================
 
-
 terraform {
-  required_providers {
-    google = {
-      source  = "hashicorp/google"
-      version = ">= 4.24.0"
-    }
+  required_version = ">= 1.3.0"
 
-    random = {
-      version = ">= 3.3.2"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.0"
     }
   }
 }

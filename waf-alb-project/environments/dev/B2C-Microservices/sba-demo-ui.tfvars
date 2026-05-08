@@ -5,7 +5,7 @@
 #        KnownBadInputs, LinuxRuleSet, SQLiRuleSet
 # =============================================================================
 
-project     = "NONPROD-BSA-Frontend"
+project     = "sba-demo-ui"
 environment = "dev"
 aws_region  = "us-east-1"
 
@@ -29,11 +29,11 @@ default_action = "allow"
 # AWS Managed Rule Groups
 # =============================================================================
 
-# 1. AWS-AWSManagedRulesBotControlRuleSet — WCU: 50     ##Done##
+# 1. AWS-AWSManagedRulesBotControlRuleSet — WCU: 50
 # Inspection: Common | Version: Default (Version_1.0)
 enable_bot_control           = true
 bot_control_action           = "block"
-bot_control_priority         = 10
+bot_control_priority         = 0
 bot_control_inspection_level = "COMMON"
 bot_control_version          = "Version_1.0"
 
@@ -43,7 +43,7 @@ bot_control_rule_action_overrides = [
   { name = "CategoryArchiver",           action = "block" },
   { name = "CategoryContentFetcher",     action = "block" },
   { name = "CategoryEmailClient",        action = "block" },
-  { name = "CategoryHttpLibrary",        action = "count" },
+  { name = "CategoryHttpLibrary",        action = "block" },
   { name = "CategoryLinkChecker",        action = "block" },
   { name = "CategoryMiscellaneous",      action = "block" },
   { name = "CategoryMonitoring",         action = "block" },
@@ -55,9 +55,9 @@ bot_control_rule_action_overrides = [
   { name = "CategoryAI",                 action = "block" },
   { name = "SignalAutomatedBrowser",     action = "block" },
   { name = "SignalKnownBotDataCenter",   action = "block" },
-  { name = "SignalNonBrowserUserAgent",  action = "count" },
+  { name = "SignalNonBrowserUserAgent",  action = "block" },
   # Targeted rules
-  { name = "TGT_VolumetricIpTokenAbsent",          action = "count" },
+  { name = "TGT_VolumetricIpTokenAbsent",          action = "challenge" },
   { name = "TGT_VolumetricSession",                action = "captcha" },
   { name = "TGT_SignalAutomatedBrowser",           action = "captcha" },
   { name = "TGT_SignalBrowserInconsistency",       action = "captcha" },
@@ -66,39 +66,39 @@ bot_control_rule_action_overrides = [
   { name = "TGT_ML_CoordinatedActivityHigh",       action = "count" },
 ]
 
-# 2. AWS-AWSManagedRulesAmazonIpReputationList — WCU: 25    ##done##
+# 2. AWS-AWSManagedRulesAmazonIpReputationList — WCU: 25
 enable_ip_reputation   = true
 ip_reputation_action   = "block"
-ip_reputation_priority = 9
+ip_reputation_priority = 1
 
 ip_reputation_rule_action_overrides = [
   { name = "AWSManagedIPReputationList",  action = "block" },
   { name = "AWSManagedReconnaissanceList", action = "block" },
-  { name = "AWSManagedIPDDoSList",        action = "block" },
+  { name = "AWSManagedIPDDoSList",        action = "count" },
 ]
 
-# 3. AWS-AWSManagedRulesAnonymousIpList — WCU: 50   ##done##
+# 3. AWS-AWSManagedRulesAnonymousIpList — WCU: 50
 enable_anonymous_ip   = true
 anonymous_ip_action   = "block"
-anonymous_ip_priority = 8
+anonymous_ip_priority = 2
 
 anonymous_ip_rule_action_overrides = [
   { name = "AnonymousIPList",        action = "block" },
-  { name = "HostingProviderIPList",  action = "count" },
+  { name = "HostingProviderIPList",  action = "block" },
 ]
 
-# 4. AWS-AWSManagedRulesCommonRuleSet — WCU: 700        ##Done##
+# 4. AWS-AWSManagedRulesCommonRuleSet — WCU: 700
 enable_aws_managed_rules   = true
 aws_managed_rules_action   = "block"
-aws_managed_rules_priority = 11
+aws_managed_rules_priority = 3
 aws_managed_rules_version  = "Version_1.20"
 
 aws_managed_rules_rule_action_overrides = [
-  { name = "NoUserAgent_HEADER",                   action = "count" },
+  { name = "NoUserAgent_HEADER",                   action = "block" },
   { name = "UserAgent_BadBots_HEADER",             action = "block" },
-  { name = "SizeRestrictions_QUERYSTRING",         action = "count" },
+  { name = "SizeRestrictions_QUERYSTRING",         action = "block" },
   { name = "SizeRestrictions_Cookie_HEADER",       action = "block" },
-  { name = "SizeRestrictions_BODY",                action = "count" },
+  { name = "SizeRestrictions_BODY",                action = "block" },
   { name = "SizeRestrictions_URIPATH",             action = "block" },
   { name = "EC2MetaDataSSRF_BODY",                 action = "block" },
   { name = "EC2MetaDataSSRF_COOKIE",               action = "block" },
@@ -114,14 +114,14 @@ aws_managed_rules_rule_action_overrides = [
   { name = "GenericRFI_URIPATH",                   action = "block" },
   { name = "CrossSiteScripting_COOKIE",            action = "block" },
   { name = "CrossSiteScripting_QUERYARGUMENTS",    action = "block" },
-  { name = "CrossSiteScripting_BODY",              action = "count" },
+  { name = "CrossSiteScripting_BODY",              action = "block" },
   { name = "CrossSiteScripting_URIPATH",           action = "block" },
 ]
 
-# 5. AWS-AWSManagedRulesKnownBadInputsRuleSet — WCU: 200        ##Done##
+# 5. AWS-AWSManagedRulesKnownBadInputsRuleSet — WCU: 200
 enable_known_bad_inputs   = true
 known_bad_inputs_action   = "block"
-known_bad_inputs_priority = 6       ##Still not changed this ##
+known_bad_inputs_priority = 4
 known_bad_inputs_version  = "Version_1.25"
 
 known_bad_inputs_rule_action_overrides = [
@@ -136,13 +136,25 @@ known_bad_inputs_rule_action_overrides = [
   { name = "Log4JRCE_BODY",                      action = "block" },
   { name = "Log4JRCE_URIPATH",                   action = "block" },
   { name = "Log4JRCE_HEADER",                    action = "block" },
+  { name = "ReactJSRCE_BODY",                    action = "block" },
 ]
 
+# 6. AWS-AWSManagedRulesLinuxRuleSet — WCU: 200
+enable_linux_protection   = true
+linux_protection_action   = "block"
+linux_protection_priority = 5
+linux_protection_version  = "Version_2.6"
 
-# 7. AWS-AWSManagedRulesSQLiRuleSet — WCU: 200  ##Done##
+linux_protection_rule_action_overrides = [
+  { name = "LFI_URIPATH",      action = "block" },
+  { name = "LFI_QUERYSTRING",  action = "block" },
+  { name = "LFI_HEADER",       action = "block" },
+]
+
+# 7. AWS-AWSManagedRulesSQLiRuleSet — WCU: 200
 enable_sql_injection_protection = true
 sql_injection_protection_action = "block"
-sql_injection_priority          = 7     ##Still not changed this ##
+sql_injection_priority          = 6
 sql_injection_version           = "Version_1.3"
 
 sql_injection_rule_action_overrides = [
@@ -172,6 +184,12 @@ enable_block_extensions   = false
 block_extensions_priority = 78
 blocked_extensions        = []
 
+enable_block_african_countries     = false
+block_african_countries_priority   = 80
+block_african_countries_priority_2 = 801
+african_country_codes_1            = []
+african_country_codes_2            = []
+
 enable_block_south_america   = false
 block_south_america_priority = 81
 south_america_country_codes  = []
@@ -187,7 +205,7 @@ selected_country_codes_2            = []
 enable_allow_country_us   = false
 allow_country_us_priority = 84
 
-enable_allow_in_us        = false
+enable_allow_in_us        = true
 allow_in_us_priority      = 7
 allow_in_us_country_codes = ["IN", "US"]
 
@@ -206,81 +224,10 @@ rate_limit_threshold   = 2000
 # =============================================================================
 # IP Allow / Block Lists
 # =============================================================================
-# keybank-frontend-prod-allowIP — Priority 0
-# Terraform will create IP set named: keybank-frontend-PROD-AllowIP
-allowlist_ips         = [
-  "125.20.89.58/32",
-  "111.93.242.74/32",
-  "182.74.72.50/32",
-  "123.63.212.74/32",
-  "125.20.89.56/29",
-  "144.121.234.242/32"
-]
-allowlist_ip_set_name = "keybank-frontend-PROD-AllowIP"
-allowlist_ip_set_arn  = ""
-allowlist_priority    = 0
-
-# VPN-AllowIp — Priority 1
-# Terraform will create IP set named: site-24and7-AllowIP
-vpn_allowlist_ips         = [
-  "45.33.65.221/32",
-  "139.64.132.20/32",
-  "123.63.212.74/32",
-  "149.28.63.4/32",
-  "156.77.0.0/16",
-  "8.12.17.175/32",
-  "50.116.57.114/32",
-  "93.177.110.3/32",
-  "111.93.242.74/32",
-  "182.74.72.50/32",
-  "162.210.173.104/32",
-  "184.74.226.42/32",
-  "162.210.173.201/32",
-  "125.20.89.56/29",
-  "23.92.18.184/32",
-  "66.135.10.99/32",
-  "198.74.62.39/32",
-  "38.122.225.178/32",
-  "45.56.110.193/32",
-  "208.249.47.2/32",
-  "45.76.0.57/32",
-  "198.74.56.175/32",
-  "125.20.89.58/32",
-  "104.192.216.226/32",
-  "172.104.208.130/32"
-]
-vpn_allowlist_ip_set_name = "site-24and7-AllowIP"
-vpn_allowlist_ip_set_arn  = ""
-vpn_allowlist_priority    = 1
-
+allowlist_ips      = []
 blocklist_ips      = []
+allowlist_priority = 5
 blocklist_priority = 30
-
-# =============================================================================
-# Geo Restriction Rules
-# =============================================================================
-
-# GEORestrictionAfrica — Priority 2
-enable_block_african_countries     = true
-block_african_countries_priority   = 2
-block_african_countries_priority_2 = 21
-african_country_codes_1            = ["DZ","AO","BJ","BW","BF","BI","CV","CM","CF","TD","KM","CG","CD","DJ","EG","GQ","ER","SZ","ET","GA","GM","GH","GN","GW","CI","KE","LS","LR","LY","MG","MW","ML","MR","MU"]
-african_country_codes_2            = []
-
-# GEORestriction-Europe — Priority 3
-enable_block_europe   = true
-block_europe_priority = 3
-europe_country_codes  = ["AX","AL","AD","AT","BY","BE","BA","BG","HR","CZ","DK","EE","FO","FI","FR","DE","GI","GR","GG","VA","HU","IS","IM","IT","JE","XK","LV","LI","LT","LU","MT","MD","MC","ME","NL","NO","PL","PT","RO","RU","SM","RS","SK","SI","ES","SJ","SE","CH","UA","GB"]
-
-# GEORestriction-Asia — Priority 4
-enable_block_asia   = true
-block_asia_priority = 4
-asia_country_codes  = ["AF","AM","AZ","BH","BD","BT","BN","KH","CN","CY","GE","IN","ID","IR","IQ","IL","JP","JO","KZ","KW","KG","LA","LB","MY","MV","MN","MM","NP","KP","OM","PK","PH","QA","SA","SG","KR","LK","SY","TW","TJ","TH","TR","TM","AE","UZ","VN","YE"]
-
-# GEORestriction-Oceania — Priority 5
-enable_block_oceania   = true
-block_oceania_priority = 5
-oceania_country_codes  = ["AS","AU","CK","FJ","FM","GU","KI","MH","MP","NC","NF","NZ","NU","PG","PN","PW","SB","TK","TO","TV","VU","WF","WS"]
 
 # =============================================================================
 # Logging

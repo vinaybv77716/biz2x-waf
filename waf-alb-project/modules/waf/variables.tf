@@ -98,7 +98,7 @@ variable "aws_managed_rules_rule_action_overrides" {
   description = "Per-sub-rule action overrides for AWSManagedRulesCommonRuleSet. Each entry overrides a specific sub-rule's action regardless of the group override_action."
   type = list(object({
     name   = string
-    action = string # block | count | allow | captcha
+    action = string # block | count | allow | captcha | challenge
   }))
   default = []
 }
@@ -136,7 +136,7 @@ variable "sql_injection_rule_action_overrides" {
   description = "Per-sub-rule action overrides for AWSManagedRulesSQLiRuleSet"
   type = list(object({
     name   = string
-    action = string # block | count | allow | captcha
+    action = string # block | count | allow | captcha | challenge
   }))
   default = []
 }
@@ -211,7 +211,7 @@ variable "known_bad_inputs_rule_action_overrides" {
   description = "Per-sub-rule action overrides for AWSManagedRulesKnownBadInputsRuleSet"
   type = list(object({
     name   = string
-    action = string # block | count | allow | captcha
+    action = string # block | count | allow | captcha | challenge
   }))
   default = []
 }
@@ -248,7 +248,7 @@ variable "ip_reputation_rule_action_overrides" {
   description = "Per-sub-rule action overrides for AWSManagedRulesAmazonIpReputationList"
   type = list(object({
     name   = string
-    action = string # block | count | allow | captcha
+    action = string # block | count | allow | captcha | challenge
   }))
   default = []
 }
@@ -320,7 +320,7 @@ variable "bot_control_rule_action_overrides" {
   description = "Per-sub-rule action overrides for AWSManagedRulesBotControlRuleSet"
   type = list(object({
     name   = string
-    action = string # block | count | allow | captcha
+    action = string # block | count | allow | captcha | challenge
   }))
   default = []
 }
@@ -357,7 +357,7 @@ variable "anti_ddos_rule_action_overrides" {
   description = "Per-sub-rule action overrides for AWSManagedRulesAntiDDoSRuleSet"
   type = list(object({
     name   = string
-    action = string # block | count | allow | captcha
+    action = string # block | count | allow | captcha | challenge
   }))
   default = []
 }
@@ -388,7 +388,7 @@ variable "linux_protection_rule_action_overrides" {
   description = "Per-sub-rule action overrides for AWSManagedRulesLinuxRuleSet"
   type = list(object({
     name   = string
-    action = string # block | count | allow | captcha
+    action = string # block | count | allow | captcha | challenge
   }))
   default = []
 }
@@ -425,7 +425,7 @@ variable "unix_protection_rule_action_overrides" {
   description = "Per-sub-rule action overrides for AWSManagedRulesUnixRuleSet"
   type = list(object({
     name   = string
-    action = string # block | count | allow | captcha
+    action = string # block | count | allow | captcha | challenge
   }))
   default = []
 }
@@ -456,7 +456,7 @@ variable "windows_protection_rule_action_overrides" {
   description = "Per-sub-rule action overrides for AWSManagedRulesWindowsRuleSet"
   type = list(object({
     name   = string
-    action = string # block | count | allow | captcha
+    action = string # block | count | allow | captcha | challenge
   }))
   default = []
 }
@@ -487,7 +487,7 @@ variable "php_protection_rule_action_overrides" {
   description = "Per-sub-rule action overrides for AWSManagedRulesPHPRuleSet"
   type = list(object({
     name   = string
-    action = string # block | count | allow | captcha
+    action = string # block | count | allow | captcha | challenge
   }))
   default = []
 }
@@ -518,7 +518,7 @@ variable "wordpress_protection_rule_action_overrides" {
   description = "Per-sub-rule action overrides for AWSManagedRulesWordPressRuleSet"
   type = list(object({
     name   = string
-    action = string # block | count | allow | captcha
+    action = string # block | count | allow | captcha | challenge
   }))
   default = []
 }

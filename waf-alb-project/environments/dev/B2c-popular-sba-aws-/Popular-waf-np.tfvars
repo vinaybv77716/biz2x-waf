@@ -5,7 +5,7 @@
 #        KnownBadInputs, LinuxRuleSet, SQLiRuleSet
 # =============================================================================
 
-project     = "sba-demo-ui"
+project     = "Popular-waf-np"
 environment = "dev"
 aws_region  = "us-east-1"
 
@@ -43,7 +43,7 @@ bot_control_rule_action_overrides = [
   { name = "CategoryArchiver",           action = "block" },
   { name = "CategoryContentFetcher",     action = "block" },
   { name = "CategoryEmailClient",        action = "block" },
-  { name = "CategoryHttpLibrary",        action = "block" },
+  { name = "CategoryHttpLibrary",        action = "allow" },
   { name = "CategoryLinkChecker",        action = "block" },
   { name = "CategoryMiscellaneous",      action = "block" },
   { name = "CategoryMonitoring",         action = "block" },
@@ -55,9 +55,9 @@ bot_control_rule_action_overrides = [
   { name = "CategoryAI",                 action = "block" },
   { name = "SignalAutomatedBrowser",     action = "block" },
   { name = "SignalKnownBotDataCenter",   action = "block" },
-  { name = "SignalNonBrowserUserAgent",  action = "block" },
+  { name = "SignalNonBrowserUserAgent",  action = "allow" },
   # Targeted rules
-  { name = "TGT_VolumetricIpTokenAbsent",          action = "count" },
+  { name = "TGT_VolumetricIpTokenAbsent",          action = "challenge" },
   { name = "TGT_VolumetricSession",                action = "captcha" },
   { name = "TGT_SignalAutomatedBrowser",           action = "captcha" },
   { name = "TGT_SignalBrowserInconsistency",       action = "captcha" },
@@ -91,16 +91,16 @@ anonymous_ip_rule_action_overrides = [
 enable_aws_managed_rules   = true
 aws_managed_rules_action   = "block"
 aws_managed_rules_priority = 3
-aws_managed_rules_version  = "Version_1.20"
+aws_managed_rules_version  = "Version_1.21"
 
 aws_managed_rules_rule_action_overrides = [
   { name = "NoUserAgent_HEADER",                   action = "block" },
   { name = "UserAgent_BadBots_HEADER",             action = "block" },
-  { name = "SizeRestrictions_QUERYSTRING",         action = "block" },
+  { name = "SizeRestrictions_QUERYSTRING",         action = "allow" },
   { name = "SizeRestrictions_Cookie_HEADER",       action = "block" },
-  { name = "SizeRestrictions_BODY",                action = "block" },
+  { name = "SizeRestrictions_BODY",                action = "allow" },
   { name = "SizeRestrictions_URIPATH",             action = "block" },
-  { name = "EC2MetaDataSSRF_BODY",                 action = "block" },
+  { name = "EC2MetaDataSSRF_BODY",                 action = "allow" },
   { name = "EC2MetaDataSSRF_COOKIE",               action = "block" },
   { name = "EC2MetaDataSSRF_URIPATH",              action = "block" },
   { name = "EC2MetaDataSSRF_QUERYARGUMENTS",       action = "block" },
@@ -114,7 +114,7 @@ aws_managed_rules_rule_action_overrides = [
   { name = "GenericRFI_URIPATH",                   action = "block" },
   { name = "CrossSiteScripting_COOKIE",            action = "block" },
   { name = "CrossSiteScripting_QUERYARGUMENTS",    action = "block" },
-  { name = "CrossSiteScripting_BODY",              action = "block" },
+  { name = "CrossSiteScripting_BODY",              action = "allow" },
   { name = "CrossSiteScripting_URIPATH",           action = "block" },
 ]
 
@@ -155,11 +155,11 @@ linux_protection_rule_action_overrides = [
 enable_sql_injection_protection = true
 sql_injection_protection_action = "block"
 sql_injection_priority          = 6
-sql_injection_version           = "Version_1.3"
+sql_injection_version           = "Version_2.0"
 
 sql_injection_rule_action_overrides = [
   { name = "SQLi_QUERYARGUMENTS",              action = "block" },
-  { name = "SQLi_BODY",                        action = "block" },
+  { name = "SQLi_BODY",                        action = "allow" },
   { name = "SQLi_COOKIE",                      action = "block" },
   { name = "SQLiExtendedPatterns_QUERYARGUMENTS", action = "block" },
   { name = "SQLiExtendedPatterns_BODY",        action = "allow" },
@@ -205,9 +205,9 @@ selected_country_codes_2            = []
 enable_allow_country_us   = false
 allow_country_us_priority = 84
 
-enable_allow_in_us        = true
+enable_allow_in_us        = false
 allow_in_us_priority      = 7
-allow_in_us_country_codes = ["IN", "US", "AF", "AQ"]
+allow_in_us_country_codes = ["IN", "US"]
 
 enable_allow_specific_urls   = false
 allow_specific_urls_priority = 3

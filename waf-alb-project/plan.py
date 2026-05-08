@@ -109,7 +109,7 @@ def subsection(title):
 # ─────────────────────────────────────────────────────────────
 # ACTION EXTRACTION
 # ─────────────────────────────────────────────────────────────
-ACTION_TYPES = ["block", "count", "allow", "captcha"]
+ACTION_TYPES = ["block", "count", "allow", "captcha", "challenge"]
 
 def action_from_item(item):
     for a in ACTION_TYPES:
