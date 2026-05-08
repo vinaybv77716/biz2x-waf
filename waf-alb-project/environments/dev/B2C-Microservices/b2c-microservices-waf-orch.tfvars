@@ -38,7 +38,7 @@ bot_control_version          = "Version_1.0"
 
 bot_control_rule_action_overrides = [
   # Common rules
-  { name = "CategoryAdvertising",        action = "allow" },  #block
+  { name = "CategoryAdvertising",        action = "block" },  #block
   { name = "CategoryArchiver",           action = "block" },
   { name = "CategoryContentFetcher",     action = "block" },
   { name = "CategoryEmailClient",        action = "block" },
@@ -71,7 +71,7 @@ ip_reputation_action   = "block"
 ip_reputation_priority = 1
 
 ip_reputation_rule_action_overrides = [
-  { name = "AWSManagedIPReputationList",  action = "allow" }, #block
+  { name = "AWSManagedIPReputationList",  action = "block" }, #block
   { name = "AWSManagedReconnaissanceList", action = "block" },
   { name = "AWSManagedIPDDoSList",        action = "count" },
 ]
@@ -82,7 +82,7 @@ anonymous_ip_action   = "block"
 anonymous_ip_priority = 2
 
 anonymous_ip_rule_action_overrides = [
-  { name = "AnonymousIPList",        action = "allow" }, #block
+  { name = "AnonymousIPList",        action = "block" }, #block
   { name = "HostingProviderIPList",  action = "block" },
 ]
 
@@ -93,7 +93,7 @@ aws_managed_rules_priority = 3
 aws_managed_rules_version  = "Version_1.6"
 
 aws_managed_rules_rule_action_overrides = [
-  { name = "NoUserAgent_HEADER",                   action = "allow" },  #block
+  { name = "NoUserAgent_HEADER",                   action = "block" },  #block
   { name = "UserAgent_BadBots_HEADER",             action = "block" },
   { name = "SizeRestrictions_QUERYSTRING",         action = "allow" },
   { name = "SizeRestrictions_Cookie_HEADER",       action = "block" },
@@ -124,7 +124,7 @@ known_bad_inputs_priority = 4
 known_bad_inputs_version  = "Version_1.17"
 
 known_bad_inputs_rule_action_overrides = [
-  { name = "JavaDeserializationRCE_BODY",        action = "allow" },  #block
+  { name = "JavaDeserializationRCE_BODY",        action = "block" },  #block
   { name = "JavaDeserializationRCE_URIPATH",     action = "block" },
   { name = "JavaDeserializationRCE_QUERYSTRING", action = "block" },
   { name = "JavaDeserializationRCE_HEADER",      action = "block" },
@@ -144,7 +144,7 @@ linux_protection_priority = 5
 linux_protection_version  = "Version_2.1"
 
 linux_protection_rule_action_overrides = [
-  { name = "LFI_URIPATH",      action = "allow" },  #block
+  { name = "LFI_URIPATH",      action = "block" },  #block
   { name = "LFI_QUERYSTRING",  action = "block" },
   { name = "LFI_HEADER",       action = "block" },
 ]
@@ -160,7 +160,7 @@ sql_injection_rule_action_overrides = [
   { name = "SQLi_BODY",                        action = "allow" },
   { name = "SQLi_COOKIE",                      action = "block" },
   { name = "SQLiExtendedPatterns_QUERYARGUMENTS", action = "block" },
-  { name = "SQLiExtendedPatterns_BODY",        action = "count" },  #allow
+  { name = "SQLiExtendedPatterns_BODY",        action = "allow" },  #allow
 ]
 
 # =============================================================================
