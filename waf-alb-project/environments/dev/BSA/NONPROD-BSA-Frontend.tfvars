@@ -57,7 +57,7 @@ bot_control_rule_action_overrides = [
   { name = "SignalKnownBotDataCenter",   action = "block" },
   { name = "SignalNonBrowserUserAgent",  action = "count" },
   # Targeted rules
-  { name = "TGT_VolumetricIpTokenAbsent",          action = "challenge" },
+  { name = "TGT_VolumetricIpTokenAbsent",          action = "count" },
   { name = "TGT_VolumetricSession",                action = "captcha" },
   { name = "TGT_SignalAutomatedBrowser",           action = "captcha" },
   { name = "TGT_SignalBrowserInconsistency",       action = "captcha" },
@@ -119,9 +119,9 @@ aws_managed_rules_rule_action_overrides = [
 ]
 
 # 5. AWS-AWSManagedRulesKnownBadInputsRuleSet — WCU: 200        ##Done##
-enable_known_bad_inputs   = true
+enable_known_bad_inputs   = false
 known_bad_inputs_action   = "block"
-known_bad_inputs_priority = 6       ##Still not changed this ##
+known_bad_inputs_priority = 12
 known_bad_inputs_version  = "Version_1.25"
 
 known_bad_inputs_rule_action_overrides = [
@@ -140,9 +140,9 @@ known_bad_inputs_rule_action_overrides = [
 
 
 # 7. AWS-AWSManagedRulesSQLiRuleSet — WCU: 200  ##Done##
-enable_sql_injection_protection = true
+enable_sql_injection_protection = false
 sql_injection_protection_action = "block"
-sql_injection_priority          = 7     ##Still not changed this ##
+sql_injection_priority          = 13     
 sql_injection_version           = "Version_1.3"
 
 sql_injection_rule_action_overrides = [
@@ -272,14 +272,14 @@ enable_block_europe   = true
 block_europe_priority = 4
 europe_country_codes  = ["AX","AL","AD","AT","BY","BE","BA","BG","HR","CZ","DK","EE","FO","FI","FR","DE","GI","GR","GG","VA","HU","IS","IM","IT","JE","XK","LV","LI","LT","LU","MT","MD","MC","ME","NL","NO","PL","PT","RO","RU","SM","RS","SK","SI","ES","SJ","SE","CH","UA","GB"]
 
-# GEORestriction-Asia — Priority 6
+# GEORestriction-Asia — Priority 5
 enable_block_asia   = true
-block_asia_priority = 6
+block_asia_priority = 5
 asia_country_codes  = ["AF","AM","AZ","BH","BD","BT","BN","KH","CN","CY","GE","IN","ID","IR","IQ","IL","JP","JO","KZ","KW","KG","LA","LB","MY","MV","MN","MM","NP","KP","OM","PK","PH","QA","SA","SG","KR","LK","SY","TW","TJ","TH","TR","TM","AE","UZ","VN","YE"]
 
-# GEORestriction-Oceania — Priority 7
+# GEORestriction-Oceania — Priority 6
 enable_block_oceania   = true
-block_oceania_priority = 7
+block_oceania_priority = 6
 oceania_country_codes  = ["AS","AU","CK","FJ","FM","GU","KI","MH","MP","NC","NF","NZ","NU","PG","PN","PW","SB","TK","TO","TV","VU","WF","WS"]
 
 # =============================================================================
