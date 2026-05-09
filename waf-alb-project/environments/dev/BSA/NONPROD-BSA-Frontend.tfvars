@@ -39,7 +39,7 @@ bot_control_version          = "Version_1.0"
 
 bot_control_rule_action_overrides = [
   # Common rules
-  { name = "CategoryAdvertising",        action = "block" },
+  { name = "CategoryAdvertising",        action = "block" },  #block
   { name = "CategoryArchiver",           action = "block" },
   { name = "CategoryContentFetcher",     action = "block" },
   { name = "CategoryEmailClient",        action = "block" },
@@ -57,7 +57,7 @@ bot_control_rule_action_overrides = [
   { name = "SignalKnownBotDataCenter",   action = "block" },
   { name = "SignalNonBrowserUserAgent",  action = "count" },
   # Targeted rules
-  { name = "TGT_VolumetricIpTokenAbsent",          action = "count" },
+  { name = "TGT_VolumetricIpTokenAbsent",          action = "challenge" },
   { name = "TGT_VolumetricSession",                action = "captcha" },
   { name = "TGT_SignalAutomatedBrowser",           action = "captcha" },
   { name = "TGT_SignalBrowserInconsistency",       action = "captcha" },
@@ -72,7 +72,7 @@ ip_reputation_action   = "block"
 ip_reputation_priority = 9
 
 ip_reputation_rule_action_overrides = [
-  { name = "AWSManagedIPReputationList",  action = "block" },
+  { name = "AWSManagedIPReputationList",  action = "block" }, #block
   { name = "AWSManagedReconnaissanceList", action = "block" },
   { name = "AWSManagedIPDDoSList",        action = "block" },
 ]
@@ -83,7 +83,7 @@ anonymous_ip_action   = "block"
 anonymous_ip_priority = 8
 
 anonymous_ip_rule_action_overrides = [
-  { name = "AnonymousIPList",        action = "block" },
+  { name = "AnonymousIPList",        action = "block" },  #block
   { name = "HostingProviderIPList",  action = "count" },
 ]
 
@@ -95,7 +95,7 @@ aws_managed_rules_version  = "Version_1.20"
 
 aws_managed_rules_rule_action_overrides = [
   { name = "NoUserAgent_HEADER",                   action = "count" },
-  { name = "UserAgent_BadBots_HEADER",             action = "block" },
+  { name = "UserAgent_BadBots_HEADER",             action = "block" },  #block
   { name = "SizeRestrictions_QUERYSTRING",         action = "count" },
   { name = "SizeRestrictions_Cookie_HEADER",       action = "block" },
   { name = "SizeRestrictions_BODY",                action = "count" },
@@ -214,7 +214,8 @@ allowlist_ips         = [
   "182.74.72.50/32",
   "123.63.212.74/32",
   "125.20.89.56/29",
-  "144.121.234.242/32"
+  "144.121.234.242/32",
+  "144.121.234.246/32"
 ]
 allowlist_ip_set_name = "keybank-frontend-PROD-AllowIP"
 allowlist_ip_set_arn  = ""
@@ -246,8 +247,8 @@ vpn_allowlist_ips         = [
   "45.76.0.57/32",
   "198.74.56.175/32",
   "125.20.89.58/32",
-  "104.192.216.226/32",
-  "172.104.208.130/32"
+  "104.192.216.226/32"
+   #"172.104.208.130/32"
 ]
 vpn_allowlist_ip_set_name = "site-24and7-AllowIP"
 vpn_allowlist_ip_set_arn  = ""
