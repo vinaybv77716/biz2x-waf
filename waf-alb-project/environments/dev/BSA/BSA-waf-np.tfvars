@@ -166,3 +166,82 @@ sql_injection_rule_action_overrides = [
 
 
 
+
+# =============================================================================
+# Custom Rules (disabled)
+# =============================================================================
+
+enable_block_admin   = false
+block_admin_priority = 75
+block_admin_paths    = ["/admin", "/wp-admin", "/administrator", "/phpmyadmin"]
+
+enable_block_git   = false
+block_git_priority = 76
+
+enable_block_specific_urls   = false
+block_specific_urls_priority = 77
+blocked_urls                 = []
+
+enable_block_extensions   = false
+block_extensions_priority = 78
+blocked_extensions        = []
+
+enable_block_african_countries     = false
+block_african_countries_priority   = 80
+block_african_countries_priority_2 = 801
+african_country_codes_1            = []
+african_country_codes_2            = []
+
+enable_block_south_america   = false
+block_south_america_priority = 81
+south_america_country_codes  = []
+
+enable_block_selected_countries_1   = false
+block_selected_countries_1_priority = 82
+selected_country_codes_1            = []
+
+enable_block_selected_countries_2   = false
+block_selected_countries_2_priority = 83
+selected_country_codes_2            = []
+
+enable_allow_country_us   = false
+allow_country_us_priority = 84
+
+enable_allow_in_us        = false
+allow_in_us_priority      = 7
+allow_in_us_country_codes = ["IN", "US"]
+
+enable_allow_specific_urls   = false
+allow_specific_urls_priority = 85
+allowed_urls                 = []
+
+# =============================================================================
+# Rate Limiting
+# =============================================================================
+enable_rate_limiting   = false
+rate_limiting_action   = "count"
+rate_limiting_priority = 40
+rate_limit_threshold   = 2000
+
+# =============================================================================
+# IP Allow / Block Lists
+# =============================================================================
+allowlist_ips      = []
+allowlist_priority = 10
+blocklist_ips      = []
+blocklist_priority = 30
+
+# =============================================================================
+# Logging
+# =============================================================================
+enable_waf_logging  = false
+log_destination_arn = ""
+
+# =============================================================================
+# Tags
+# =============================================================================
+tags = {
+  Environment = "dev"
+  ManagedBy   = "Terraform"
+  Project     = "BSA-waf-np"
+}
