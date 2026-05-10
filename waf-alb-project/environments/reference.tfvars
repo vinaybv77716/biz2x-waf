@@ -21,7 +21,7 @@
 # -----------------------------------------------------------------------------
 # Project Identity (REQUIRED — no defaults)
 # -----------------------------------------------------------------------------
-project     = "PROD-BSA-Backend"
+project     = "your-project-name"
 environment = "dev"
 aws_region  = "us-east-1"
 
