@@ -305,22 +305,21 @@ rate_limit_threshold   = 2000      # requests per 5 minutes per IP (100–20,000
 # =============================================================================
 # IP ALLOW / BLOCK LISTS
 # =============================================================================
+# Referencing shared IP sets created by ip-list.tfvars — no IPs listed here.
 
-# ── IP Allowlist (keybank-frontend-prod-allowIP) ─────────────────────────────
-# Creates a new IP set OR references an existing one via ARN.
-# If allowlist_ip_set_arn is set, allowlist_ips is ignored (no new set created).
+# keybank-Backend-Prod-AllowIP — Priority 0
 allowlist_ips         = []
-allowlist_ip_set_name = ""    # Custom name for the IP set (auto-generated if empty)
-allowlist_ip_set_arn  = ""    # ARN of existing IP set to reuse
+allowlist_ip_set_name = "keybank-Backend-Prod-AllowIP"
+allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/keybank-Backend-Prod-AllowIP/c0ced8e2-aa9e-4aa0-9d90-721e79df3927"
 allowlist_priority    = 0
 
-# ── VPN Allowlist (VPN-AllowIp) ──────────────────────────────────────────────
+# site-24and7-AllowIP — Priority 1
 vpn_allowlist_ips         = []
-vpn_allowlist_ip_set_name = ""
-vpn_allowlist_ip_set_arn  = ""
+vpn_allowlist_ip_set_name = "site-24and7-AllowIP"
+vpn_allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/site-24and7-AllowIP/16c758f2-5b6d-4082-80fd-cd2d3afa6c7e"
 vpn_allowlist_priority    = 1
 
-# ── IP Blocklist (Block-IP) ───────────────────────────────────────────────────
+# Keybank-Orchestrator-Prod-BlockIP — Priority 30
 blocklist_ips      = []
 blocklist_priority = 30
 

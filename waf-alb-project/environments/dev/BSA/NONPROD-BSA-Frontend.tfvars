@@ -206,51 +206,18 @@ rate_limit_threshold   = 2000
 # =============================================================================
 # IP Allow / Block Lists
 # =============================================================================
-# keybank-frontend-prod-allowIP — Priority 0
-# Terraform will create IP set named: keybank-frontend-PROD-AllowIP
-allowlist_ips         = [
-  "125.20.89.58/32",
-  "111.93.242.74/32",
-  "182.74.72.50/32",
-  "123.63.212.74/32",
-  "125.20.89.56/29",
-  "144.121.234.242/32"
-]
+# Referencing shared IP sets created by ip-list.tfvars — no IPs listed here.
+
+# keybank-frontend-PROD-AllowIP — Priority 0
+allowlist_ips         = []
 allowlist_ip_set_name = "keybank-frontend-PROD-AllowIP"
-allowlist_ip_set_arn  = ""
+allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/keybank-frontend-PROD-AllowIP/5772f85e-1db3-47d2-9b42-6ff19521a8b9"
 allowlist_priority    = 0
 
-# VPN-AllowIp — Priority 1
-# Terraform will create IP set named: site-24and7-AllowIP
-vpn_allowlist_ips         = [
-  "45.33.65.221/32",
-  "139.64.132.20/32",
-  "123.63.212.74/32",
-  "149.28.63.4/32",
-  "156.77.0.0/16",
-  "8.12.17.175/32",
-  "50.116.57.114/32",
-  "93.177.110.3/32",
-  "111.93.242.74/32",
-  "182.74.72.50/32",
-  "162.210.173.104/32",
-  "184.74.226.42/32",
-  "162.210.173.201/32",
-  "125.20.89.56/29",
-  "23.92.18.184/32",
-  "66.135.10.99/32",
-  "198.74.62.39/32",
-  "38.122.225.178/32",
-  "45.56.110.193/32",
-  "208.249.47.2/32",
-  "45.76.0.57/32",
-  "198.74.56.175/32",
-  "125.20.89.58/32",
-  "104.192.216.226/32",
-  "172.104.208.130/32"
-]
+# site-24and7-AllowIP — Priority 1
+vpn_allowlist_ips         = []
 vpn_allowlist_ip_set_name = "site-24and7-AllowIP"
-vpn_allowlist_ip_set_arn  = ""
+vpn_allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/site-24and7-AllowIP/16c758f2-5b6d-4082-80fd-cd2d3afa6c7e"
 vpn_allowlist_priority    = 1
 
 blocklist_ips      = []
