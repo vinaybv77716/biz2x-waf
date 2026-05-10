@@ -55,6 +55,12 @@ variable "create_waf" {
   default     = true
 }
 
+variable "create_ip_sets_only" {
+  description = "When true, creates IP sets without creating a WAF Web ACL. Use for ip-list.tfvars deployments."
+  type        = bool
+  default     = false
+}
+
 variable "existing_web_acl_arn" {
   description = "ARN of existing WAF Web ACL (required when create_waf = false)"
   type        = string

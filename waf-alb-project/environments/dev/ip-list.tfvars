@@ -1,7 +1,8 @@
 # =============================================================================
 # ip-list.tfvars — Shared IP Set Creation
 # =============================================================================
-# Creates 4 named WAFv2 IP sets. No WAF Web ACL is created (create_waf=false).
+# Creates 4 named WAFv2 IP sets only. No WAF Web ACL is created (create_waf=false).
+# IP set resources are now independent of create_waf in the module.
 # These IP sets are shared across all WAF deployments in this account.
 #
 # Usage:
@@ -37,7 +38,9 @@ region = "us-east-1"
 # -----------------------------------------------------------------------------
 # WAF — disabled, only IP sets are created
 # -----------------------------------------------------------------------------
+# WAF ACL — not created. Only IP sets are created.
 create_waf           = false
+create_ip_sets_only  = true
 existing_web_acl_arn = ""
 associate_waf        = false
 alb_arns             = []

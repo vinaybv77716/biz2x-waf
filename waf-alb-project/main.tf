@@ -35,6 +35,7 @@ module "waf" {
 
   # WAF lifecycle flags
   create_waf           = var.create_waf
+  create_ip_sets_only  = var.create_ip_sets_only
   existing_web_acl_arn = var.existing_web_acl_arn
 
   # Association control
