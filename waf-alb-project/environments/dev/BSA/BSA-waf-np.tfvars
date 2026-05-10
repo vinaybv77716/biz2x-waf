@@ -119,7 +119,7 @@ aws_managed_rules_rule_action_overrides = [
 ]
 
 # 5. AWS-AWSManagedRulesKnownBadInputsRuleSet — WCU: 200        ##Done##
-enable_known_bad_inputs   = false
+enable_known_bad_inputs   = true
 known_bad_inputs_action   = "block"
 known_bad_inputs_priority = 4
 known_bad_inputs_version  = "Version_1.22"
@@ -151,7 +151,7 @@ linux_protection_rule_action_overrides = [
 ]
 
 # 7. AWS-AWSManagedRulesSQLiRuleSet — WCU: 200  ##Done##
-enable_sql_injection_protection = false
+enable_sql_injection_protection = true
 sql_injection_protection_action = "block"
 sql_injection_priority          = 6     
 sql_injection_version           = "Version_1.3"
