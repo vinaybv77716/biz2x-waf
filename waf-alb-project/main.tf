@@ -114,6 +114,11 @@ module "waf" {
   vpn_allowlist_ip_set_arn = var.vpn_allowlist_ip_set_arn
   vpn_allowlist_priority   = var.vpn_allowlist_priority
 
+  frontend_allowlist_ips         = var.frontend_allowlist_ips
+  frontend_allowlist_ip_set_name = var.frontend_allowlist_ip_set_name
+  frontend_allowlist_ip_set_arn  = var.frontend_allowlist_ip_set_arn
+  frontend_allowlist_priority    = var.frontend_allowlist_priority
+
   # Custom rules
   enable_block_admin                  = var.enable_block_admin
   block_admin_priority                = var.block_admin_priority

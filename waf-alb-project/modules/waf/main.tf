@@ -36,6 +36,17 @@ resource "aws_wafv2_ip_set" "vpn_allowlist" {
   tags = merge(var.tags, { Name = var.vpn_allowlist_ip_set_name != "" ? var.vpn_allowlist_ip_set_name : "${local.name_prefix}-vpn-allowlist" })
 }
 
+resource "aws_wafv2_ip_set" "frontend_allowlist" {
+  count              = var.create_waf && length(var.frontend_allowlist_ips) > 0 && var.frontend_allowlist_ip_set_arn == "" ? 1 : 0
+  name               = var.frontend_allowlist_ip_set_name != "" ? var.frontend_allowlist_ip_set_name : "${local.name_prefix}-frontend-allowlist"
+  description        = "Frontend Allowlisted IPs for ${local.name_prefix}"
+  scope              = "REGIONAL"
+  ip_address_version = "IPV4"
+  addresses          = var.frontend_allowlist_ips
+
+  tags = merge(var.tags, { Name = var.frontend_allowlist_ip_set_name != "" ? var.frontend_allowlist_ip_set_name : "${local.name_prefix}-frontend-allowlist" })
+}
+
 resource "aws_wafv2_ip_set" "blocklist" {
   count              = var.create_waf && length(var.blocklist_ips) > 0 ? 1 : 0
   name               = "${local.name_prefix}-blocklist"
@@ -870,6 +881,31 @@ resource "aws_wafv2_web_acl" "this" {
       visibility_config {
         cloudwatch_metrics_enabled = true
         metric_name                = "VPN-AllowIp"
+        sampled_requests_enabled   = true
+      }
+    }
+  }
+
+  # ---- Frontend IP Allowlist Rule (keybank-frontend-PROD-AllowIP) ----
+  dynamic "rule" {
+    for_each = var.create_waf && (length(var.frontend_allowlist_ips) > 0 || var.frontend_allowlist_ip_set_arn != "") ? [1] : []
+    content {
+      name     = "keybank-frontend-PROD-AllowIP"
+      priority = var.frontend_allowlist_priority
+
+      action {
+        allow {}
+      }
+
+      statement {
+        ip_set_reference_statement {
+          arn = var.frontend_allowlist_ip_set_arn != "" ? var.frontend_allowlist_ip_set_arn : aws_wafv2_ip_set.frontend_allowlist[0].arn
+        }
+      }
+
+      visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "keybank-frontend-PROD-AllowIP"
         sampled_requests_enabled   = true
       }
     }

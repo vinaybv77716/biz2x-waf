@@ -603,6 +603,30 @@ variable "vpn_allowlist_priority" {
   default     = 1
 }
 
+variable "frontend_allowlist_ips" {
+  description = "List of frontend IP CIDR blocks to always allow (creates a new IP set)"
+  type        = list(string)
+  default     = []
+}
+
+variable "frontend_allowlist_ip_set_name" {
+  description = "Custom name for the frontend allowlist IP set. Defaults to <project>-<env>-frontend-allowlist if empty."
+  type        = string
+  default     = ""
+}
+
+variable "frontend_allowlist_ip_set_arn" {
+  description = "ARN of an existing IP set to use for the frontend allowlist rule. If set, frontend_allowlist_ips is ignored."
+  type        = string
+  default     = ""
+}
+
+variable "frontend_allowlist_priority" {
+  description = "Priority for frontend IP allowlist rule (must be unique across all rules)"
+  type        = number
+  default     = 2
+}
+
 # Geo Block — Europe
 variable "enable_block_europe" {
   description = "Block requests from European countries"
