@@ -646,9 +646,21 @@ variable "block_europe_priority" {
 }
 
 variable "europe_country_codes" {
-  description = "ISO 3166-1 alpha-2 country codes for European countries to block"
+  description = "ISO 3166-1 alpha-2 country codes for European countries to block (batch 1, max 50)"
   type        = list(string)
   default     = ["AL", "AD", "AT", "BY", "BE", "BA", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IS", "IE", "IT", "XK", "LV", "LI", "LT", "LU", "MT", "MD", "MC", "ME", "NL", "MK", "NO", "PL", "PT", "RO", "RU", "SM", "RS", "SK", "SI", "ES", "SE", "CH", "UA", "GB", "VA"]
+}
+
+variable "block_europe_priority_2" {
+  description = "Priority for European countries block rule (batch 2)"
+  type        = number
+  default     = 31
+}
+
+variable "europe_country_codes_2" {
+  description = "ISO 3166-1 alpha-2 country codes for European countries to block (batch 2 overflow)"
+  type        = list(string)
+  default     = []
 }
 
 # Geo Block — Asia

@@ -1164,6 +1164,31 @@ resource "aws_wafv2_web_acl" "this" {
     }
   }
 
+  # ---- GEORestriction-Europe-2 ----
+  dynamic "rule" {
+    for_each = var.enable_block_europe && length(var.europe_country_codes_2) > 0 ? [1] : []
+    content {
+      name     = "GEORestriction-Europe-2"
+      priority = var.block_europe_priority_2
+
+      action {
+        block {}
+      }
+
+      statement {
+        geo_match_statement {
+          country_codes = var.europe_country_codes_2
+        }
+      }
+
+      visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "GEORestriction-Europe-2"
+        sampled_requests_enabled   = true
+      }
+    }
+  }
+
   # ---- GEORestriction-Asia ----
   dynamic "rule" {
     for_each = var.enable_block_asia && length(var.asia_country_codes) > 0 ? [1] : []

@@ -143,6 +143,8 @@ module "waf" {
   enable_block_europe                 = var.enable_block_europe
   block_europe_priority               = var.block_europe_priority
   europe_country_codes                = var.europe_country_codes
+  block_europe_priority_2             = var.block_europe_priority_2
+  europe_country_codes_2              = var.europe_country_codes_2
   enable_block_asia                   = var.enable_block_asia
   block_asia_priority                 = var.block_asia_priority
   asia_country_codes                  = var.asia_country_codes

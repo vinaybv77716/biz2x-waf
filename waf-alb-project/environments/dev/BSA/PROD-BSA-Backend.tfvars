@@ -398,14 +398,65 @@ south_america_country_codes  = [
 ]
 
 # ── Block European Countries ─────────────────────────────────────────────────
-enable_block_europe   = false
-block_europe_priority = 53
-europe_country_codes  = [
-  "AL", "AD", "AT", "BY", "BE", "BA", "BG", "HR", "CY", "CZ",
-  "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IS", "IE", "IT",
-  "XK", "LV", "LI", "LT", "LU", "MT", "MD", "MC", "ME", "NL",
-  "MK", "NO", "PL", "PT", "RO", "RU", "SM", "RS", "SK", "SI",
-  "ES", "SE", "CH", "UA", "GB", "VA"
+enable_block_europe     = true
+block_europe_priority   = 53
+europe_country_codes    = [
+  "AL",  # Albania
+  "AD",  # Andorra
+  "AT",  # Austria
+  "BY",  # Belarus
+  "BE",  # Belgium
+  "BA",  # Bosnia and Herzegovina
+  "BG",  # Bulgaria
+  "HR",  # Croatia
+  "CZ",  # Czech Republic
+  "DK",  # Denmark
+  "EE",  # Estonia
+  "FO",  # Faroe Islands
+  "FI",  # Finland
+  "FR",  # France
+  "DE",  # Germany
+  "GI",  # Gibraltar
+  "GR",  # Greece
+  "GL",  # Greenland
+  "GG",  # Guernsey
+  "HU",  # Hungary
+  "IS",  # Iceland
+  "IE",  # Ireland
+  "IM",  # Isle of Man
+  "IT",  # Italy
+  "JE",  # Jersey
+  "XK",  # Kosovo
+  "LV",  # Latvia
+  "LI",  # Liechtenstein
+  "LT",  # Lithuania
+  "LU",  # Luxembourg
+  "MT",  # Malta
+  "MD",  # Moldova, Republic of
+  "MC",  # Monaco
+  "ME",  # Montenegro
+  "NL",  # Netherlands
+  "MK",  # Macedonia, the Former Yugoslav Republic of
+  "NO",  # Norway
+  "PL",  # Poland
+  "PT",  # Portugal
+  "RO",  # Romania
+  "RU",  # Russian Federation
+  "SM",  # San Marino
+  "RS",  # Serbia
+  "SK",  # Slovakia
+  "SI",  # Slovenia
+  "ES",  # Spain
+  "SJ",  # Svalbard and Jan Mayen
+  "SE",  # Sweden
+  "CH",  # Switzerland
+  "TR",  # Turkey
+]
+block_europe_priority_2 = 54
+europe_country_codes_2  = [
+  "UA",  # Ukraine
+  "GB",  # United Kingdom
+  "VA",  # Holy See (Vatican City State)
 ]
 
 # ── Block Asian Countries ─────────────────────────────────────────────────────
