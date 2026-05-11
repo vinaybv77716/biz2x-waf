@@ -840,7 +840,7 @@ resource "aws_wafv2_web_acl" "this" {
   dynamic "rule" {
     for_each = var.create_waf && (length(var.allowlist_ips) > 0 || var.allowlist_ip_set_arn != "") ? [1] : []
     content {
-      name     = "keybank-frontend-prod-allowIP"
+      name     = var.allowlist_ip_set_name != "" ? var.allowlist_ip_set_name : "keybank-frontend-prod-allowIP"
       priority = var.allowlist_priority
 
       action {
@@ -855,7 +855,7 @@ resource "aws_wafv2_web_acl" "this" {
 
       visibility_config {
         cloudwatch_metrics_enabled = true
-        metric_name                = "keybank-frontend-prod-allowIP"
+        metric_name                = var.allowlist_ip_set_name != "" ? var.allowlist_ip_set_name : "keybank-frontend-prod-allowIP"
         sampled_requests_enabled   = true
       }
     }
@@ -865,7 +865,7 @@ resource "aws_wafv2_web_acl" "this" {
   dynamic "rule" {
     for_each = var.create_waf && (length(var.vpn_allowlist_ips) > 0 || var.vpn_allowlist_ip_set_arn != "") ? [1] : []
     content {
-      name     = "VPN-AllowIp"
+      name     = var.vpn_allowlist_ip_set_name != "" ? var.vpn_allowlist_ip_set_name : "VPN-AllowIp"
       priority = var.vpn_allowlist_priority
 
       action {
@@ -880,7 +880,7 @@ resource "aws_wafv2_web_acl" "this" {
 
       visibility_config {
         cloudwatch_metrics_enabled = true
-        metric_name                = "VPN-AllowIp"
+        metric_name                = var.vpn_allowlist_ip_set_name != "" ? var.vpn_allowlist_ip_set_name : "VPN-AllowIp"
         sampled_requests_enabled   = true
       }
     }
