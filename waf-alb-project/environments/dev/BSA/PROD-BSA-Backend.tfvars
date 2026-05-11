@@ -308,7 +308,7 @@ rate_limit_threshold   = 2000      # requests per 5 minutes per IP (100–20,000
 
 # site-24and7-AllowIP — Priority 0 (VPN/office allowlist — highest priority)
 vpn_allowlist_ips         = []
-vpn_allowlist_ip_set_name = "site-24and7-AllowIP"
+vpn_allowlist_ip_set_name = "Site24-AllowIP"
 vpn_allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/site-24and7-AllowIP/16c758f2-5b6d-4082-80fd-cd2d3afa6c7e"
 vpn_allowlist_priority    = 0
 
@@ -327,17 +327,68 @@ blocklist_priority = 30
 # =============================================================================
 
 # ── Block African Countries (split into 2 rules — AWS max 50 codes per rule) ─
-enable_block_african_countries     = false
+enable_block_african_countries     = true
 block_african_countries_priority   = 50
 block_african_countries_priority_2 = 51
 african_country_codes_1            = [
-  "DZ", "AO", "BJ", "BW", "BF", "BI", "CM", "CV", "CF", "TD",
-  "KM", "CG", "CD", "CI", "DJ", "EG", "GQ", "ER", "ET", "GA",
-  "GM", "GH", "GN", "GW", "KE", "LS", "LR", "LY", "MG", "MW",
-  "ML", "MR", "MU", "MA", "MZ", "NA", "NE", "NG", "RW", "ST",
-  "SN", "SL", "SO", "ZA", "SS", "SD", "SZ", "TZ", "TG", "TN"
+  "DZ",  # Algeria
+  "AO",  # Angola
+  "BJ",  # Benin
+  "BW",  # Botswana
+  "BF",  # Burkina Faso
+  "BI",  # Burundi
+  "CM",  # Cameroon
+  "CV",  # Cape Verde
+  "CF",  # Central African Republic
+  "TD",  # Chad
+  "KM",  # Comoros
+  "CG",  # Congo
+  "CD",  # Congo, Democratic Republic of the
+  "DJ",  # Djibouti
+  "EG",  # Egypt
+  "GQ",  # Equatorial Guinea
+  "ER",  # Eritrea
+  "SZ",  # Swaziland (Eswatini)
+  "ET",  # Ethiopia
+  "GA",  # Gabon
+  "GM",  # Gambia
+  "GH",  # Ghana
+  "GN",  # Guinea
+  "GW",  # Guinea-Bissau
+  "CI",  # Cote D'Ivoire
+  "KE",  # Kenya
+  "LS",  # Lesotho
+  "LR",  # Liberia
+  "LY",  # Libya
+  "MG",  # Madagascar
+  "MW",  # Malawi
+  "ML",  # Mali
+  "MR",  # Mauritania
+  "MU",  # Mauritius
+  "MA",  # Morocco
+  "MZ",  # Mozambique
+  "NA",  # Namibia
+  "NE",  # Niger
+  "NG",  # Nigeria
+  "RE",  # Reunion
+  "RW",  # Rwanda
+  "ST",  # Sao Tome and Principe
+  "SN",  # Senegal
+  "SC",  # Seychelles
+  "SL",  # Sierra Leone
+  "SO",  # Somalia
+  "ZA",  # South Africa
+  "SS",  # South Sudan
+  "SD",  # Sudan
+  "TZ",  # Tanzania, United Republic of
 ]
-african_country_codes_2            = ["UG", "ZM", "ZW"]
+african_country_codes_2            = [
+  "TG",  # Togo
+  "TN",  # Tunisia
+  "UG",  # Uganda
+  "ZM",  # Zambia
+  "ZW",  # Zimbabwe
+]
 
 # ── Block South American Countries ───────────────────────────────────────────
 enable_block_south_america   = false
