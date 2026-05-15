@@ -209,7 +209,7 @@ rate_limit_threshold   = 2000
 # Referencing shared IP sets created by ip-list.tfvars — no IPs listed here.
 
 # keybank-frontend-PROD-AllowIP — Priority 0
-allowlist_ips         = ["22.22.22.22/32"]
+allowlist_ips         = []
 allowlist_ip_set_name = "testing"
 allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/testing/c0336499-a8e9-49fe-83fe-61a49c089ff3"
 allowlist_priority    = 0
