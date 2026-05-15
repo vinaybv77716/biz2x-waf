@@ -215,7 +215,7 @@ allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/key
 allowlist_priority    = 0
 
 # site-24and7-AllowIP — Priority 1
-vpn_allowlist_ips         = []
+vpn_allowlist_ips         = ["33.33.33.33/32"]
 vpn_allowlist_ip_set_name = "site-24and7-AllowIP"
 vpn_allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/site-24and7-AllowIP/dfb99752-b04e-44e4-bd3c-177310ec36ef"
 vpn_allowlist_priority    = 1
