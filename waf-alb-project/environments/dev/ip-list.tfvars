@@ -49,7 +49,7 @@ default_action       = "allow"
 # -----------------------------------------------------------------------------
 # Required — no default in variables.tf
 # -----------------------------------------------------------------------------
-#allow_in_us_country_codes = ["IN", "US"]
+allow_in_us_country_codes = ["IN", "US"]
 
 # =============================================================================
 # IP Set 1 — keybank-Backend-Prod-AllowIP  (26 IPs)
