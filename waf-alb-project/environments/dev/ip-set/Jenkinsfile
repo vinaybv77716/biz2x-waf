@@ -82,9 +82,9 @@ pipeline {
                 script {
                     def planOutput = readFile("${env.WORKSPACE_DIR}/ip_set_plan.txt")
 
-                    // Count changes
-                    def addCount    = (planOutput =~ /\| ADD\s*\|/).count
-                    def removeCount = (planOutput =~ /\| REMOVE\s*\|/).count
+                    // Count changes using sandbox-safe string operations
+                    def addCount    = planOutput.split('\n').count { it.contains('| ADD') }
+                    def removeCount = planOutput.split('\n').count { it.contains('| REMOVE') }
 
                     echo "Changes detected: +${addCount} ADD  -${removeCount} REMOVE"
 
