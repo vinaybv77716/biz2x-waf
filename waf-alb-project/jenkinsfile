@@ -61,46 +61,43 @@ pipeline {
             }
             steps {
                 dir(env.WORKSPACE_DIR) {
-                    script {
-                        def imports = [
-                            [
-                                resource: "module.waf.aws_wafv2_ip_set.allowlist[0]",
-                                id:       "c0ced8e2-aa9e-4aa0-9d90-721e79df3927/keybank-Backend-Prod-AllowIP/REGIONAL"
-                            ],
-                            [
-                                resource: "module.waf.aws_wafv2_ip_set.vpn_allowlist[0]",
-                                id:       "16c758f2-5b6d-4082-80fd-cd2d3afa6c7e/site-24and7-AllowIP/REGIONAL"
-                            ],
-                            [
-                                resource: "module.waf.aws_wafv2_ip_set.frontend_allowlist[0]",
-                                id:       "5772f85e-1db3-47d2-9b42-6ff19521a8b9/keybank-frontend-PROD-AllowIP/REGIONAL"
-                            ],
-                            [
-                                resource: "module.waf.aws_wafv2_ip_set.blocklist[0]",
-                                id:       "a4f7167f-fc91-4728-bd8e-2673fb33a8e3/Keybank-Prchestrator-Prod-BlockIP/REGIONAL"
-                            ],
-                        ]
+                    sh """
+                    set -e
 
-                        imports.each { entry ->
-                            echo "Importing ${entry.resource} ..."
-                            // terraform import returns exit code 1 if already in state.
-                            // We capture output and only fail on unexpected errors.
-                            def output = sh(
-                                script: """
-                                terraform import \
-                                  -var-file="environments/${params.ENVIRONMENT}/${params.TERRAFORM_VARIABLE_FILE}" \
-                                  '${entry.resource}' \
-                                  '${entry.id}' 2>&1 || true
-                                """,
-                                returnStdout: true
-                            ).trim()
-                            echo output
-                            if (output.contains("Cannot import non-existent remote object") ||
-                                (output.contains("Error") && !output.contains("Resource already managed") && !output.contains("already exists in the state"))) {
-                                error("Import failed for ${entry.resource}: ${output}")
-                            }
-                        }
+                    VARFILE="environments/${params.ENVIRONMENT}/${params.TERRAFORM_VARIABLE_FILE}"
+
+                    import_if_missing() {
+                        RESOURCE="\$1"
+                        IMPORT_ID="\$2"
+
+                        # Check if already in state
+                        if terraform state show "\$RESOURCE" > /dev/null 2>&1; then
+                            echo "SKIP (already in state): \$RESOURCE"
+                        else
+                            echo "IMPORTING: \$RESOURCE"
+                            terraform import -var-file="\$VARFILE" "\$RESOURCE" "\$IMPORT_ID"
+                            echo "DONE: \$RESOURCE"
+                        fi
                     }
+
+                    import_if_missing \\
+                        "module.waf.aws_wafv2_ip_set.allowlist[0]" \\
+                        "c0ced8e2-aa9e-4aa0-9d90-721e79df3927/keybank-Backend-Prod-AllowIP/REGIONAL"
+
+                    import_if_missing \\
+                        "module.waf.aws_wafv2_ip_set.vpn_allowlist[0]" \\
+                        "16c758f2-5b6d-4082-80fd-cd2d3afa6c7e/site-24and7-AllowIP/REGIONAL"
+
+                    import_if_missing \\
+                        "module.waf.aws_wafv2_ip_set.frontend_allowlist[0]" \\
+                        "5772f85e-1db3-47d2-9b42-6ff19521a8b9/keybank-frontend-PROD-AllowIP/REGIONAL"
+
+                    import_if_missing \\
+                        "module.waf.aws_wafv2_ip_set.blocklist[0]" \\
+                        "a4f7167f-fc91-4728-bd8e-2673fb33a8e3/Keybank-Prchestrator-Prod-BlockIP/REGIONAL"
+
+                    echo "All imports complete."
+                    """
                 }
             }
         }
