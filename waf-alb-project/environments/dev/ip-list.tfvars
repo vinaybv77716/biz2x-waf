@@ -117,6 +117,7 @@ vpn_allowlist_ips = [
   "125.20.89.58/32",
   "104.192.216.226/32",
   "172.104.208.130/32",
+  "22.22.22.22/32"
 ]
 vpn_allowlist_ip_set_name = "site-24and7-AllowIP"
 vpn_allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/site-24and7-AllowIP/dfb99752-b04e-44e4-bd3c-177310ec36ef"
