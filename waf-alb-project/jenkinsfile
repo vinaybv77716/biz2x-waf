@@ -54,6 +54,7 @@ pipeline {
         }
 
         // ── Terraform Import (IP sets only — runs for ip-list.tfvars) ──
+        // Runs BEFORE plan so the plan reflects imported state correctly.
         stage('Terraform Import') {
             when {
                 expression { params.TERRAFORM_VARIABLE_FILE == 'ip-list.tfvars' }
@@ -61,8 +62,6 @@ pipeline {
             steps {
                 dir(env.WORKSPACE_DIR) {
                     script {
-                        // Import existing IP sets into state if not already tracked.
-                        // We check state first — only import if resource is not already there.
                         def imports = [
                             [
                                 resource: "module.waf.aws_wafv2_ip_set.allowlist[0]",
@@ -83,22 +82,22 @@ pipeline {
                         ]
 
                         imports.each { entry ->
-                            // Check if already in state — skip import if so
-                            def inState = sh(
-                                script: "terraform state list '${entry.resource}' 2>/dev/null | grep -c '${entry.resource}' || true",
-                                returnStdout: true
-                            ).trim()
-
-                            if (inState == "0") {
-                                echo "Importing ${entry.resource} ..."
-                                sh """
+                            echo "Importing ${entry.resource} ..."
+                            // terraform import returns exit code 1 if already in state.
+                            // We capture output and only fail on unexpected errors.
+                            def output = sh(
+                                script: """
                                 terraform import \
                                   -var-file="environments/${params.ENVIRONMENT}/${params.TERRAFORM_VARIABLE_FILE}" \
                                   '${entry.resource}' \
-                                  '${entry.id}'
-                                """
-                            } else {
-                                echo "Already in state — skipping import: ${entry.resource}"
+                                  '${entry.id}' 2>&1 || true
+                                """,
+                                returnStdout: true
+                            ).trim()
+                            echo output
+                            if (output.contains("Cannot import non-existent remote object") ||
+                                (output.contains("Error") && !output.contains("Resource already managed") && !output.contains("already exists in the state"))) {
+                                error("Import failed for ${entry.resource}: ${output}")
                             }
                         }
                     }
