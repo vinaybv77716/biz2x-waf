@@ -86,36 +86,42 @@ def aws(*args):
     return json.loads(result.stdout)
 
 
-def get_live_ips(arn, region):
-    """Fetch current IPs from AWS for a given IP set ARN."""
-    # Extract id and name from ARN
-    # arn:aws:wafv2:region:account:regional/ipset/name/id
-    parts = arn.split("/")
-    ip_set_id   = parts[-1]
-    ip_set_name = parts[-2]
+def get_live_ips(name, region):
+    """Fetch current IPs from AWS for a given IP set name (lookup by name)."""
+    # List all IP sets and find by name
+    result = aws("wafv2", "list-ip-sets",
+                 "--scope", "REGIONAL",
+                 "--region", region)
 
-    result = aws("wafv2", "get-ip-set",
+    ip_set_info = next(
+        (s for s in result.get("IPSets", []) if s["Name"] == name),
+        None
+    )
+
+    if not ip_set_info:
+        raise ValueError(f"IP set '{name}' not found in region {region}")
+
+    ip_set_id = ip_set_info["Id"]
+
+    detail = aws("wafv2", "get-ip-set",
                  "--scope", "REGIONAL",
                  "--region", region,
-                 "--name", ip_set_name,
+                 "--name", name,
                  "--id", ip_set_id)
 
-    addresses = result.get("IPSet", {}).get("Addresses", [])
-    lock_token = result.get("LockToken", "")
-    return sorted(addresses), lock_token
+    addresses  = detail.get("IPSet", {}).get("Addresses", [])
+    lock_token = detail.get("LockToken", "")
+    live_arn   = ip_set_info["ARN"]
+    return sorted(addresses), lock_token, ip_set_id, live_arn
 
 
-def update_ip_set(arn, region, desired_ips, lock_token):
+def update_ip_set(name, ip_set_id, region, desired_ips, lock_token):
     """Update the IP set with the desired list."""
-    parts = arn.split("/")
-    ip_set_id   = parts[-1]
-    ip_set_name = parts[-2]
-
     cmd = [
         "aws", "wafv2", "update-ip-set",
         "--scope", "REGIONAL",
         "--region", region,
-        "--name", ip_set_name,
+        "--name", name,
         "--id", ip_set_id,
         "--lock-token", lock_token,
         "--addresses"
@@ -123,7 +129,7 @@ def update_ip_set(arn, region, desired_ips, lock_token):
 
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
-        print(f"ERROR updating {ip_set_name}:\n{result.stderr}", file=sys.stderr)
+        print(f"ERROR updating {name}:\n{result.stderr}", file=sys.stderr)
         sys.exit(1)
     return json.loads(result.stdout)
 
@@ -188,10 +194,17 @@ def main():
         print(f"  ARN     : {arn}")
 
         try:
-            live_list, lock_token = get_live_ips(arn, region)
+            live_list, lock_token, ip_set_id, live_arn = get_live_ips(name, region)
+        except ValueError as e:
+            print(f"  ERROR: {e}\n")
+            continue
         except SystemExit:
             print(f"  ERROR: Could not fetch live state for {name}\n")
             continue
+
+        # Show live ARN if it differs from tfvars (stale ARN warning)
+        if live_arn != arn:
+            print(f"  NOTE: ARN in tfvars is stale. Live ARN: {live_arn}")
 
         live = set(live_list)
 
@@ -226,7 +239,7 @@ def main():
 
         if action == "apply":
             print(f"  Applying update to {name} ...")
-            update_ip_set(arn, region, sorted(desired), lock_token)
+            update_ip_set(name, ip_set_id, region, sorted(desired), lock_token)
             print(f"  SUCCESS: {name} updated (+{len(to_add)} / -{len(to_remove)})\n")
         else:
             print(f"  [PLAN] Would add {len(to_add)}, remove {len(to_remove)} IPs\n")
