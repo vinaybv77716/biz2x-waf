@@ -24,7 +24,7 @@ ip_sets = [
   # =============================================================================
   {
     name = "site-24and7-AllowIP"
-    arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/site-24and7-AllowIP/16c758f2-5b6d-4082-80fd-cd2d3afa6c7e"
+    arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/site-24and7-AllowIP/eac59bc0-c105-48ef-84c3-8dd8eff7ce0d"
     ips  = [
       "45.33.65.221/32",
       "139.64.132.20/32",
@@ -59,7 +59,7 @@ ip_sets = [
   # =============================================================================
   {
     name = "keybank-frontend-PROD-AllowIP"
-    arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/keybank-frontend-PROD-AllowIP/5772f85e-1db3-47d2-9b42-6ff19521a8b9"
+    arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/keybank-frontend-PROD-AllowIP/921df34f-c70c-4e0f-81d1-fcc8c24b5e94"
     ips  = [
       "125.20.89.58/32",
       "111.93.242.74/32",
