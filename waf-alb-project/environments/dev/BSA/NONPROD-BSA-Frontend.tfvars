@@ -210,8 +210,8 @@ rate_limit_threshold   = 2000
 
 # keybank-frontend-PROD-AllowIP — Priority 0
 allowlist_ips         = []
-allowlist_ip_set_name = "keybank-frontend-PROD-AllowIP"
-allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/keybank-frontend-PROD-AllowIP/5772f85e-1db3-47d2-9b42-6ff19521a8b9"
+allowlist_ip_set_name = "testing"
+allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/testing/c0336499-a8e9-49fe-83fe-61a49c089ff3"
 allowlist_priority    = 0
 
 # site-24and7-AllowIP — Priority 1
