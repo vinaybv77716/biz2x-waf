@@ -84,7 +84,7 @@ allowlist_ips = [
   "172.104.208.130/32",
 ]
 allowlist_ip_set_name = "keybank-Backend-Prod-AllowIP"
-allowlist_ip_set_arn  = ""
+allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/keybank-Backend-Prod-AllowIP/c0ced8e2-aa9e-4aa0-9d90-721e79df3927"
 allowlist_priority    = 0
 
 # =============================================================================
@@ -119,7 +119,7 @@ vpn_allowlist_ips = [
   "172.104.208.130/32",
 ]
 vpn_allowlist_ip_set_name = "site-24and7-AllowIP"
-vpn_allowlist_ip_set_arn  = ""
+vpn_allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/site-24and7-AllowIP/16c758f2-5b6d-4082-80fd-cd2d3afa6c7e"
 vpn_allowlist_priority    = 1
 
 # =============================================================================
@@ -133,7 +133,8 @@ blocklist_ips = [
   "143.110.250.43/32",
   "3.7.148.225/32",
 ]
-blocklist_priority = 30
+blocklist_ip_set_name = "Keybank-Orchestrator-Prod-BlockIP"
+blocklist_priority    = 30
 
 # =============================================================================
 # IP Set 4 — keybank-frontend-PROD-AllowIP  (6 IPs)
@@ -148,7 +149,7 @@ frontend_allowlist_ips = [
   "144.121.234.242/32",
 ]
 frontend_allowlist_ip_set_name = "keybank-frontend-PROD-AllowIP"
-frontend_allowlist_ip_set_arn  = ""
+frontend_allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/keybank-frontend-PROD-AllowIP/5772f85e-1db3-47d2-9b42-6ff19521a8b9"
 frontend_allowlist_priority    = 2
 
 # =============================================================================

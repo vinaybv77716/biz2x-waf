@@ -49,7 +49,7 @@ resource "aws_wafv2_ip_set" "frontend_allowlist" {
 
 resource "aws_wafv2_ip_set" "blocklist" {
   count              = (var.create_waf || var.create_ip_sets_only) && length(var.blocklist_ips) > 0 ? 1 : 0
-  name               = "${local.name_prefix}-blocklist"
+  name               = var.blocklist_ip_set_name != "" ? var.blocklist_ip_set_name : "${local.name_prefix}-blocklist"
   description        = "Blocklisted IPs for ${local.name_prefix}"
   scope              = "REGIONAL"
   ip_address_version = "IPV4"

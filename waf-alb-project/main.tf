@@ -108,6 +108,7 @@ module "waf" {
   allowlist_ip_set_name    = var.allowlist_ip_set_name
   allowlist_ip_set_arn     = var.allowlist_ip_set_arn
   blocklist_ips            = var.blocklist_ips
+  blocklist_ip_set_name    = var.blocklist_ip_set_name
   allowlist_priority       = var.allowlist_priority
   blocklist_priority       = var.blocklist_priority
   vpn_allowlist_ips        = var.vpn_allowlist_ips

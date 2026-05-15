@@ -557,6 +557,12 @@ variable "blocklist_ips" {
   default     = []
 }
 
+variable "blocklist_ip_set_name" {
+  description = "Custom name for the blocklist IP set. Defaults to <project>-<env>-blocklist if empty."
+  type        = string
+  default     = ""
+}
+
 variable "allowlist_priority" {
   description = "Priority for IP allowlist rule (must be unique across all rules)"
   type        = number
