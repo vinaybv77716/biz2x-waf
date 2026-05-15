@@ -28,11 +28,36 @@ output "associated_alb_arns" {
 }
 
 output "allowlist_ip_set_arn" {
-  description = "ARN of the allowlist IP set (null if not created)"
-  value       = var.create_waf && length(var.allowlist_ips) > 0 ? aws_wafv2_ip_set.allowlist[0].arn : null
+  description = "ARN of the allowlist IP set — returns provided ARN if using existing, created ARN if new, null if not used"
+  value = (
+    var.allowlist_ip_set_arn != "" ? var.allowlist_ip_set_arn :
+    length(aws_wafv2_ip_set.allowlist) > 0 ? aws_wafv2_ip_set.allowlist[0].arn :
+    null
+  )
+}
+
+output "vpn_allowlist_ip_set_arn" {
+  description = "ARN of the VPN allowlist IP set — returns provided ARN if using existing, created ARN if new, null if not used"
+  value = (
+    var.vpn_allowlist_ip_set_arn != "" ? var.vpn_allowlist_ip_set_arn :
+    length(aws_wafv2_ip_set.vpn_allowlist) > 0 ? aws_wafv2_ip_set.vpn_allowlist[0].arn :
+    null
+  )
+}
+
+output "frontend_allowlist_ip_set_arn" {
+  description = "ARN of the frontend allowlist IP set — returns provided ARN if using existing, created ARN if new, null if not used"
+  value = (
+    var.frontend_allowlist_ip_set_arn != "" ? var.frontend_allowlist_ip_set_arn :
+    length(aws_wafv2_ip_set.frontend_allowlist) > 0 ? aws_wafv2_ip_set.frontend_allowlist[0].arn :
+    null
+  )
 }
 
 output "blocklist_ip_set_arn" {
-  description = "ARN of the blocklist IP set (null if not created)"
-  value       = var.create_waf && length(var.blocklist_ips) > 0 ? aws_wafv2_ip_set.blocklist[0].arn : null
+  description = "ARN of the blocklist IP set — returns created ARN if new, null if not used"
+  value = (
+    length(aws_wafv2_ip_set.blocklist) > 0 ? aws_wafv2_ip_set.blocklist[0].arn :
+    null
+  )
 }
