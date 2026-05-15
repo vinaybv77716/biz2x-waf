@@ -23,7 +23,7 @@ associate_waf = true
 alb_arns      = []
 
 # Default action
-default_action = "allow"
+default_action = "block"
 
 # =============================================================================
 # AWS Managed Rule Groups

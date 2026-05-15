@@ -122,7 +122,7 @@ aws_managed_rules_rule_action_overrides = [
 enable_known_bad_inputs   = true
 known_bad_inputs_action   = "block"
 known_bad_inputs_priority = 12
-known_bad_inputs_version  = "Version_1.25"
+known_bad_inputs_version  = "Version_1.22"
 
 known_bad_inputs_rule_action_overrides = [
   { name = "JavaDeserializationRCE_BODY",        action = "block" },
@@ -143,7 +143,7 @@ known_bad_inputs_rule_action_overrides = [
 enable_sql_injection_protection = true
 sql_injection_protection_action = "block"
 sql_injection_priority          = 13     
-sql_injection_version           = "Version_1.3"
+sql_injection_version           = "Version_1.3" 
 
 sql_injection_rule_action_overrides = [
   { name = "SQLi_QUERYARGUMENTS",              action = "block" },
