@@ -209,15 +209,15 @@ rate_limit_threshold   = 2000
 # Referencing shared IP sets created by ip-list.tfvars — no IPs listed here.
 
 # keybank-frontend-PROD-AllowIP — Priority 0
-allowlist_ips         = ["11.11.11.11/32"]
-allowlist_ip_set_name = "testing"
-allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/testing/c0336499-a8e9-49fe-83fe-61a49c089ff3"
+allowlist_ips         = []
+allowlist_ip_set_name = "keybank-frontend-PROD-AllowIP"
+allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/keybank-frontend-PROD-AllowIP/8611a7ef-2e66-4300-800a-85bd833b1bd8"
 allowlist_priority    = 0
 
 # site-24and7-AllowIP — Priority 1
 vpn_allowlist_ips         = []
 vpn_allowlist_ip_set_name = "site-24and7-AllowIP"
-vpn_allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/site-24and7-AllowIP/16c758f2-5b6d-4082-80fd-cd2d3afa6c7e"
+vpn_allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/site-24and7-AllowIP/dfb99752-b04e-44e4-bd3c-177310ec36ef"
 vpn_allowlist_priority    = 1
 
 blocklist_ips      = []
