@@ -53,6 +53,53 @@ pipeline {
             }
         }
 
+        // ── Terraform Import (IP sets only — runs for ip-list.tfvars) ──
+        stage('Terraform Import') {
+            when {
+                expression { params.TERRAFORM_VARIABLE_FILE == 'ip-list.tfvars' }
+            }
+            steps {
+                dir(env.WORKSPACE_DIR) {
+                    script {
+                        // Import existing IP sets into state if not already tracked.
+                        // terraform import exits with code 1 if already in state — we ignore that.
+                        def imports = [
+                            [
+                                resource: "module.waf.aws_wafv2_ip_set.allowlist[0]",
+                                id:       "c0ced8e2-aa9e-4aa0-9d90-721e79df3927/keybank-Backend-Prod-AllowIP/REGIONAL"
+                            ],
+                            [
+                                resource: "module.waf.aws_wafv2_ip_set.vpn_allowlist[0]",
+                                id:       "dfb99752-b04e-44e4-bd3c-177310ec36ef/site-24and7-AllowIP/REGIONAL"
+                            ],
+                            [
+                                resource: "module.waf.aws_wafv2_ip_set.frontend_allowlist[0]",
+                                id:       "5772f85e-1db3-47d2-9b42-6ff19521a8b9/keybank-frontend-PROD-AllowIP/REGIONAL"
+                            ],
+                            [
+                                resource: "module.waf.aws_wafv2_ip_set.blocklist[0]",
+                                id:       "a4f7167f-fc91-4728-bd8e-2673fb33a8e3/ip-list-dev-blocklist/REGIONAL"
+                            ],
+                        ]
+
+                        imports.each { entry ->
+                            echo "Importing ${entry.resource} ..."
+                            def rc = sh(
+                                script: """
+                                terraform import \
+                                  -var-file="environments/${params.ENVIRONMENT}/${params.TERRAFORM_VARIABLE_FILE}" \
+                                  '${entry.resource}' \
+                                  '${entry.id}' || true
+                                """,
+                                returnStatus: true
+                            )
+                            echo "Import exit code for ${entry.resource}: ${rc}"
+                        }
+                    }
+                }
+            }
+        }
+
         // ── Terraform Plan ──────────────────────────────────────
         stage('Terraform Plan') {
             steps {

@@ -88,8 +88,11 @@ allow_in_us_country_codes = ["IN", "US"]
 #allowlist_priority    = 0
 
 # =============================================================================
-# IP Set 2 — site-24and7-AllowIP  (25 IPs)
-# Used by: all WAFs as VPN/office allowlist
+# IP Set 2 — site-24and7-AllowIP  (26 IPs)
+# Terraform-managed. Import existing IP set before first apply:
+#   terraform import -var-file="environments/dev/ip-list.tfvars" \
+#     module.waf.aws_wafv2_ip_set.vpn_allowlist[0] \
+#     "dfb99752-b04e-44e4-bd3c-177310ec36ef/site-24and7-AllowIP/REGIONAL"
 # =============================================================================
 vpn_allowlist_ips = [
   "45.33.65.221/32",
@@ -120,7 +123,7 @@ vpn_allowlist_ips = [
   "22.22.22.22/32",
 ]
 vpn_allowlist_ip_set_name = "site-24and7-AllowIP"
-vpn_allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/site-24and7-AllowIP/dfb99752-b04e-44e4-bd3c-177310ec36ef"
+vpn_allowlist_ip_set_arn  = ""
 vpn_allowlist_priority    = 1
 
 # =============================================================================
@@ -134,7 +137,7 @@ vpn_allowlist_priority    = 1
 #  "143.110.250.43/32",
 #  "3.7.148.225/32",
 #]
-#blocklist_ip_set_name = "Keybank-Orchestrator-Prod-BlockIP"
+#blocklist_ip_set_name = "Keybank-Prchestrator-Prod-BlockIP"
 #blocklist_priority    = 30
 
 # =============================================================================
