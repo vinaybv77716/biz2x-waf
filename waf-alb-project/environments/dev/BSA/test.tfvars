@@ -260,5 +260,5 @@ tags = {
   Environment = "dev"
   ManagedBy   = "Terraform"
   Project     = "test"
-  Purpose     = "Testing — IP data sourced from ip-list.tfvars"
+  Purpose     = "Testing - IP data sourced from ip-list.tfvars"
 }
