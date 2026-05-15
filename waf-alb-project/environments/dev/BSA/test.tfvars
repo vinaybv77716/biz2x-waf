@@ -68,7 +68,7 @@ vpn_allowlist_priority    = 3
 # IP Set 2 — testing (1 IP) — Priority 0
 # ARN: arn:aws:wafv2:us-east-1:892669526097:regional/ipset/testing/c0336499-a8e9-49fe-83fe-61a49c089ff3
 # =============================================================================
-allowlist_ips         = ["11.11.11.11/32"]
+allowlist_ips         = ["11.11.11.11/32","22.22.22.22/32"]
 allowlist_ip_set_name = "testing"
 allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/testing/c0336499-a8e9-49fe-83fe-61a49c089ff3"
 allowlist_priority    = 0
