@@ -1,0 +1,145 @@
+// =============================================================================
+// IP Set Manager Pipeline
+// =============================================================================
+// Manages AWS WAFv2 IP sets directly via AWS CLI — no Terraform involved.
+// Reads ip-sets.tfvars, compares against live AWS state, and shows a diff
+// table (plan) or applies the changes (apply).
+//
+// Parameters:
+//   ACTION      : plan  — show diff table only, no changes made
+//                 apply — show diff then update AWS IP sets
+//   IP_SETS_FILE: path to the tfvars file (relative to waf-alb-project/)
+//   AWS_REGION  : AWS region (default: us-east-1)
+// =============================================================================
+
+pipeline {
+    agent any
+
+    parameters {
+        choice(
+            name: 'ACTION',
+            choices: ['plan', 'apply'],
+            description: 'plan = show diff only | apply = update IP sets in AWS'
+        )
+        string(
+            name: 'IP_SETS_FILE',
+            defaultValue: 'environments/dev/ip-set/ip-sets.tfvars',
+            description: 'Path to ip-sets.tfvars (relative to waf-alb-project/)'
+        )
+        string(
+            name: 'AWS_REGION',
+            defaultValue: 'us-east-1',
+            description: 'AWS region where IP sets live'
+        )
+    }
+
+    environment {
+        WORKSPACE_DIR = "waf-alb-project"
+    }
+
+    options {
+        timeout(time: 15, unit: 'MINUTES')
+        disableConcurrentBuilds()
+        timestamps()
+    }
+
+    stages {
+
+        // ── Validate ─────────────────────────────────────────────────────────
+        stage('Validate') {
+            steps {
+                script {
+                    def tfvarsPath = "${env.WORKSPACE_DIR}/${params.IP_SETS_FILE}"
+                    if (!fileExists(tfvarsPath)) {
+                        error("IP sets file not found: ${tfvarsPath}")
+                    }
+                    echo "Action     : ${params.ACTION}"
+                    echo "IP Sets    : ${params.IP_SETS_FILE}"
+                    echo "AWS Region : ${params.AWS_REGION}"
+                }
+            }
+        }
+
+        // ── Plan — show diff table ────────────────────────────────────────────
+        stage('Plan — IP Set Diff') {
+            steps {
+                dir(env.WORKSPACE_DIR) {
+                    sh """
+                    python3 ${params.IP_SETS_FILE.replace('ip-sets.tfvars', 'ip_set_manager.py')} \\
+                        plan \\
+                        ${params.IP_SETS_FILE} \\
+                        2>&1 | tee ip_set_plan.txt
+                    """
+                }
+                archiveArtifacts artifacts: "${env.WORKSPACE_DIR}/ip_set_plan.txt"
+            }
+        }
+
+        // ── Approval (apply only) ─────────────────────────────────────────────
+        stage('Approval') {
+            when { expression { params.ACTION == 'apply' } }
+            steps {
+                script {
+                    def planOutput = readFile("${env.WORKSPACE_DIR}/ip_set_plan.txt")
+
+                    // Count changes
+                    def addCount    = (planOutput =~ /\| ADD\s*\|/).count
+                    def removeCount = (planOutput =~ /\| REMOVE\s*\|/).count
+
+                    echo "Changes detected: +${addCount} ADD  -${removeCount} REMOVE"
+
+                    if (addCount == 0 && removeCount == 0) {
+                        echo "No changes — skipping approval and apply."
+                        env.SKIP_APPLY = "true"
+                    } else {
+                        env.SKIP_APPLY = "false"
+                        input(
+                            message: "Apply IP set changes? (+${addCount} ADD / -${removeCount} REMOVE)",
+                            ok: 'Apply',
+                            submitter: 'admin,devops'
+                        )
+                    }
+                }
+            }
+        }
+
+        // ── Apply — update AWS IP sets ────────────────────────────────────────
+        stage('Apply — Update IP Sets') {
+            when {
+                allOf {
+                    expression { params.ACTION == 'apply' }
+                    expression { env.SKIP_APPLY != 'true' }
+                }
+            }
+            steps {
+                dir(env.WORKSPACE_DIR) {
+                    sh """
+                    python3 ${params.IP_SETS_FILE.replace('ip-sets.tfvars', 'ip_set_manager.py')} \\
+                        apply \\
+                        ${params.IP_SETS_FILE} \\
+                        2>&1 | tee ip_set_apply.txt
+                    """
+                }
+                archiveArtifacts artifacts: "${env.WORKSPACE_DIR}/ip_set_apply.txt"
+            }
+        }
+    }
+
+    post {
+        success {
+            script {
+                if (params.ACTION == 'plan') {
+                    echo "Plan complete — review the diff above. Run with ACTION=apply to update."
+                } else {
+                    echo "IP sets updated successfully."
+                }
+            }
+        }
+        failure {
+            echo "Pipeline failed — check the logs above."
+        }
+        always {
+            cleanWs()
+        }
+    }
+}
