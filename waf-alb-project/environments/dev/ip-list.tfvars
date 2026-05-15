@@ -119,7 +119,7 @@ vpn_allowlist_ips = [
   "172.104.208.130/32",
 ]
 vpn_allowlist_ip_set_name = "site-24and7-AllowIP"
-vpn_allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/site-24and7-AllowIP/16c758f2-5b6d-4082-80fd-cd2d3afa6c7e"
+vpn_allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/site-24and7-AllowIP/dfb99752-b04e-44e4-bd3c-177310ec36ef"
 vpn_allowlist_priority    = 1
 
 # =============================================================================
@@ -149,7 +149,7 @@ frontend_allowlist_ips = [
   "144.121.234.242/32",
 ]
 frontend_allowlist_ip_set_name = "keybank-frontend-PROD-AllowIP"
-frontend_allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/keybank-frontend-PROD-AllowIP/5772f85e-1db3-47d2-9b42-6ff19521a8b9"
+frontend_allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/keybank-frontend-PROD-AllowIP/8611a7ef-2e66-4300-800a-85bd833b1bd8"
 frontend_allowlist_priority    = 2
 
 # =============================================================================
