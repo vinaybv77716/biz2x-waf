@@ -121,6 +121,7 @@ vpn_allowlist_ips = [
   "104.192.216.226/32",
   "172.104.208.130/32",
   "22.22.22.22/32",
+  "44.44.44.44/32",
 ]
 vpn_allowlist_ip_set_name = "site-24and7-AllowIP"
 vpn_allowlist_ip_set_arn  = ""
