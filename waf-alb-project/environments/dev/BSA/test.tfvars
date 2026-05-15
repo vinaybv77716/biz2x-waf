@@ -101,19 +101,12 @@ allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/key
 allowlist_priority    = 1
 
 # =============================================================================
-# IP Set 3 — keybank-frontend-PROD-AllowIP (6 IPs) — Priority 2
-# ARN: arn:aws:wafv2:us-east-1:892669526097:regional/ipset/keybank-frontend-PROD-AllowIP/5772f85e-1db3-47d2-9b42-6ff19521a8b9
+# IP Set 3 — testing (1 IP) — Priority 2
+# ARN: arn:aws:wafv2:us-east-1:892669526097:regional/ipset/testing/c0336499-a8e9-49fe-83fe-61a49c089ff3
 # =============================================================================
-frontend_allowlist_ips = [
-  "125.20.89.58/32",
-  "111.93.242.74/32",
-  "182.74.72.50/32",
-  "123.63.212.74/32",
-  "125.20.89.56/29",
-  "144.121.234.242/32",
-]
-frontend_allowlist_ip_set_name = "keybank-frontend-PROD-AllowIP"
-frontend_allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/keybank-frontend-PROD-AllowIP/5772f85e-1db3-47d2-9b42-6ff19521a8b9"
+frontend_allowlist_ips         = ["11.11.11.11/32"]
+frontend_allowlist_ip_set_name = "testing"
+frontend_allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/testing/c0336499-a8e9-49fe-83fe-61a49c089ff3"
 frontend_allowlist_priority    = 2
 
 # =============================================================================
@@ -128,19 +121,6 @@ blocklist_ips = [
   "3.7.148.225/32",
 ]
 blocklist_priority = 30
-
-
-
-=============================================================================
-# IP Set 5 — testing (1 IPs) — Priority 0
-# ARN: arn:aws:wafv2:us-east-1:892669526097:regional/ipset/testing/c0336499-a8e9-49fe-83fe-61a49c089ff3
-# =============================================================================
-frontend_allowlist_ips = [
-"11.11.11.11/32"
-]
-frontend_allowlist_ip_set_name = "testing"
-frontend_allowlist_ip_set_arn  = "arn:aws:wafv2:us-east-1:892669526097:regional/ipset/testing/c0336499-a8e9-49fe-83fe-61a49c089ff3"
-frontend_allowlist_priority    = 0
 
 # =============================================================================
 # All WAF rules disabled
