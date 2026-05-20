@@ -65,10 +65,12 @@ pipeline {
             steps {
                 dir(env.WORKSPACE_DIR) {
                     sh """
+                    set -e
                     python3 ${params.IP_SETS_FILE.replace('ip-sets.tfvars', 'ip_set_manager.py')} \\
                         plan \\
                         ${params.IP_SETS_FILE} \\
                         2>&1 | tee ip_set_plan.txt
+                    test \${PIPESTATUS[0]} -eq 0
                     """
                 }
                 archiveArtifacts artifacts: "${env.WORKSPACE_DIR}/ip_set_plan.txt"
@@ -114,10 +116,12 @@ pipeline {
             steps {
                 dir(env.WORKSPACE_DIR) {
                     sh """
+                    set -e
                     python3 ${params.IP_SETS_FILE.replace('ip-sets.tfvars', 'ip_set_manager.py')} \\
                         apply \\
                         ${params.IP_SETS_FILE} \\
                         2>&1 | tee ip_set_apply.txt
+                    test \${PIPESTATUS[0]} -eq 0
                     """
                 }
                 archiveArtifacts artifacts: "${env.WORKSPACE_DIR}/ip_set_apply.txt"
