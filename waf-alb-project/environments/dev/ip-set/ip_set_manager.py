@@ -138,7 +138,35 @@ def update_ip_set(name, ip_set_id, region, desired_ips, lock_token):
 # Table printer
 # ---------------------------------------------------------------------------
 
-def print_table(headers, rows):
+def validate_ip_sets(ip_sets):
+    """
+    Validate all IP sets before plan or apply.
+    Rules:
+      1. No IP set may be empty (must have at least 1 IP).
+      2. No IP set may contain 0.0.0.0/0 (would allow/block all traffic).
+    Returns a list of error strings. Empty list = all valid.
+    """
+    errors = []
+    for entry in ip_sets:
+        name = entry["name"]
+        ips  = entry["ips"]
+
+        # Rule 1 — empty IP set
+        if not ips:
+            errors.append(f"  [EMPTY]   '{name}' has no IPs — IP set cannot be empty.")
+
+        # Rule 2 — catch-all CIDR
+        for ip in ips:
+            if ip.strip() in ("0.0.0.0/0", "::/0"):
+                errors.append(
+                    f"  [INVALID] '{name}' contains '{ip}' — "
+                    f"catch-all CIDR is not allowed in WAF IP sets."
+                )
+
+    return errors
+
+
+
     widths = [len(h) for h in headers]
     for row in rows:
         for i, cell in enumerate(row):
@@ -180,6 +208,19 @@ def main():
     print(f"  File   : {tfvars}")
     print(f"  Sets   : {len(ip_sets)}")
     print(f"{'='*80}\n")
+
+    # ── Validation ────────────────────────────────────────────────────────────
+    print("  Running pre-flight validation ...")
+    errors = validate_ip_sets(ip_sets)
+    if errors:
+        print(f"\n{'!'*80}")
+        print("  VALIDATION FAILED — fix the following issues before proceeding:")
+        print(f"{'!'*80}")
+        for err in errors:
+            print(err)
+        print()
+        sys.exit(1)
+    print(f"  Validation passed — {len(ip_sets)} IP set(s) OK\n")
 
     total_adds = 0
     total_removes = 0
