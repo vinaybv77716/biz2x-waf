@@ -166,7 +166,11 @@ def validate_ip_sets(ip_sets):
     return errors
 
 
+# ---------------------------------------------------------------------------
+# Table printer
+# ---------------------------------------------------------------------------
 
+def print_table(headers, rows):
     widths = [len(h) for h in headers]
     for row in rows:
         for i, cell in enumerate(row):
