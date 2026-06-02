@@ -84,11 +84,7 @@ pipeline {
                       "${params.IMPORT_ID}"
                     """
 
-                    // Push local state to S3 immediately after import
-                    // so it persists before cleanWs() removes the workspace
-                    sh "terraform state push terraform.tfstate"
-
-                    echo "✅ State pushed to S3: waf-alb-existing/${params.ENVIRONMENT}/${params.TERRAFORM_VARIABLE_FILE}.tfstate"
+                    echo "✅ Import complete — state saved to S3: waf-alb-existing/${params.ENVIRONMENT}/${params.TERRAFORM_VARIABLE_FILE}.tfstate"
                 }
             }
         }
