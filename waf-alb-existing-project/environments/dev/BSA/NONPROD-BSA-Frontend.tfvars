@@ -39,7 +39,7 @@ bot_control_version          = "Version_1.0"
 
 bot_control_rule_action_overrides = [
   # Common rules
-  { name = "CategoryAdvertising",        action = "block" },  #block
+  { name = "CategoryAdvertising",        action = "count" },  #block
   { name = "CategoryArchiver",           action = "block" },
   { name = "CategoryContentFetcher",     action = "block" },
   { name = "CategoryEmailClient",        action = "block" },
